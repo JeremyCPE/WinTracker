@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using WinTracker.Utils;
+
 
 namespace WinTracker.Models
 {
@@ -13,12 +15,13 @@ namespace WinTracker.Models
         public static void AssignDefault()
         {
             ColorList.Clear();
-            ColorList.Add(Category.Office, Color.Black);
-            ColorList.Add(Category.Windows, Color.Blue);
-            ColorList.Add(Category.VideoGames, Color.Red);
-            ColorList.Add(Category.Chatting, Color.Green);
-            ColorList.Add(Category.Developpement, Color.Purple);
-            ColorList.Add(Category.Browser, Color.Orange);
+            // Not supposed to be null but just to be sure....
+            ColorList.AddIfNotNull(Category.GetCategoryByName("Office"), Color.Black);
+            ColorList.AddIfNotNull(Category.GetCategoryByName("Windows"), Color.Blue);
+            ColorList.AddIfNotNull(Category.GetCategoryByName("VideoGames"), Color.Red);
+            ColorList.AddIfNotNull(Category.GetCategoryByName("Chatting"), Color.Green);
+            ColorList.AddIfNotNull(Category.GetCategoryByName("Developpement"), Color.Purple);
+            ColorList.AddIfNotNull(Category.GetCategoryByName("Browser"), Color.Orange);
         }
 
         public static void AssignColor(Category category, Color color)
