@@ -51,7 +51,9 @@ namespace WinTracker.Models
 
         internal static ApplicationInfo ConvertFrom(Process process)
         {
-            throw new NotImplementedException();
+            return (new
+                (new ( (uint)process.Id, process.MainModule.FileVersionInfo.ProductName), 
+                new()));
         }
     }
 }
