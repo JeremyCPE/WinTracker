@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Application Usage Tracker" Height="350" Width="525">
     <Grid>
-        <DataGrid ItemsSource="{Binding Applications}" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding ApplicationInfos}" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ProcessId" Binding="{Binding ProcessId}" Width="*"/>
-                <DataGridTextColumn Header="Application" Binding="{Binding ProcessName}" Width="*"/>
-                <DataGridTextColumn Header="Usage Time" Binding="{Binding UsageTime}" Width="*"/>
+                <DataGridTextColumn Header="ProcessId" Binding="{Binding ProcessInfo.ProcessId}" Width="*"/>
+                <DataGridTextColumn Header="Application" Binding="{Binding ProcessInfo.ProcessName}" Width="*"/>
+                <DataGridTextColumn Header="Usage Time" Binding="{Binding TimeElapsed}" Width="*"/>
                 <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

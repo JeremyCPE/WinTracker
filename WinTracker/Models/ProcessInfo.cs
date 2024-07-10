@@ -1,13 +1,12 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
+﻿
 namespace WinTracker.Models
 {
-    public class Application
+    public class ProcessInfo
     {
         public uint ProcessId { get; set; }
         public string ProcessName { get; set; }
 
-        public Application(uint processId, string processName)
+        public ProcessInfo(uint processId, string processName)
         {
             ProcessId = processId;
             ProcessName = processName;

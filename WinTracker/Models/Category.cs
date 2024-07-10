@@ -3,26 +3,25 @@
     public class Category
     {
         public static List<Category> Categories { get; set; } = Default();
-        private Guid Guid { get; set; }
         public string Name { get; private set; }
 
-        private Category(string categoryName)
+        public Category(string categoryName = "Others")
         {
-            this.Guid = Guid.NewGuid();
             this.Name = categoryName;
         }
 
         private static List<Category> Default()
         {
-            return new List<Category>()
-            {
+            return
+            [
                 new("Office"),
                 new("Windows"),
                 new("VideoGames"),
                 new("Chatting"),
                 new("Developpement"),
-                new("Browser")
-            };
+                new("Browser"),
+                new("Others")
+            ];
         }
 
         /// <summary>
@@ -43,6 +42,8 @@
         /// <returns></returns>
         public static bool AddCategory(string categoryName)
         {
+            if(string.IsNullOrEmpty(categoryName)) return false;
+
             if(Categories.Any(c => string.Equals(c.Name,categoryName,StringComparison.OrdinalIgnoreCase))) return false; // False if name already exists.
             Categories.Add(new(categoryName));
             return true;
@@ -55,7 +56,9 @@
         /// <returns></returns>
         public static bool RemoveCategory(string categoryName)
         {
-            if(!IsRemovable(categoryName)) return false;  
+            if (string.IsNullOrEmpty(categoryName)) return false;
+
+            if (!IsRemovable(categoryName)) return false;  
             var category = Categories.FirstOrDefault(c => c.Name == categoryName);
             if (category != null)
             {

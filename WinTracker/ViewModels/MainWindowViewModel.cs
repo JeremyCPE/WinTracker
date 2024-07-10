@@ -10,13 +10,14 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WinTracker.Models;
+using WinTracker.Communication;
 
 namespace WinTracker.ViewModels
 {
     public class MainWindowViewModel
     {
 
-        public ObservableCollection<ApplicationModel> Applications { get; set; }
+        public ObservableCollection<ApplicationInfo> ApplicationInfos { get; set; }
         private DateTime _lastActiveTime;
         private Dispatcher _dispatcher;
         private string _lastActiveProcess;
@@ -25,7 +26,7 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            Applications = new ObservableCollection<ApplicationModel>();
+            ApplicationInfos = new ObservableCollection<ApplicationInfo>();
             _lastActiveTime = DateTime.Now;
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();
@@ -46,28 +47,32 @@ namespace WinTracker.ViewModels
         }
 
         private void ProcessStarted(object sender, EventArrivedEventArgs e)
-        { 
-            string processId = e.NewEvent.Properties["ProcessID"].Value?.ToString() ?? throw new ArgumentException("Process Id not found");
-            string processName = GetProcessNameById(uint.Parse(processId));
+        {
+            if (!uint.TryParse(e.NewEvent.Properties["ProcessID"].Value?.ToString(), out uint processId));
+            if (processId is 0) return; // We Ignore PID 0 for now
+            string processName = GetProcessNameById(processId);
+
+            if(string.IsNullOrEmpty(processName)) return;
 
             _dispatcher.Invoke(() =>
             {
-                Applications.Add(new(processId, processName));
-                OnPropertyChanged(nameof(Applications));
+                ApplicationInfos.Add(new
+                    (new(processId, processName), 
+                    new()));
+                OnPropertyChanged(nameof(ApplicationInfos));
             });
         }
 
         private void ProcessStopped(object sender, EventArrivedEventArgs e)
         {
-            string processId = e.NewEvent.Properties["ProcessID"].Value?.ToString();
+            uint.TryParse(e.NewEvent.Properties["ProcessID"].Value?.ToString(), out uint processId);
             _dispatcher.Invoke(() =>
             {
-                var app = Applications.FirstOrDefault(a => a.ProcessId == processId);
+                var app = ApplicationInfos.FirstOrDefault(a => a.ProcessInfo.ProcessId == processId);
                 if (app != null)
                 {
                     app.State = State.Stopped;
-                    app.UsageTime = DateTime.Now.TimeOfDay - app.TimeStart;
-                    OnPropertyChanged(nameof(Applications));
+                    OnPropertyChanged(nameof(ApplicationInfos));
                 }
             });
         }
@@ -76,10 +81,10 @@ namespace WinTracker.ViewModels
         {
             while (true)
             {
-                IntPtr hWnd = GetForegroundWindow();
-                int length = GetWindowTextLength(hWnd);
+                IntPtr hWnd = NativeMethods.GetForegroundWindow();
+                int length = NativeMethods.GetWindowTextLength(hWnd);
                 StringBuilder windowTitle = new StringBuilder(length + 1);
-                GetWindowText(hWnd, windowTitle, windowTitle.Capacity);
+                NativeMethods.GetWindowText(hWnd, windowTitle, windowTitle.Capacity);
 
                 string processName = GetProcessNameFromWindow(hWnd);
 
@@ -103,11 +108,11 @@ namespace WinTracker.ViewModels
             {
                 _dispatcher.Invoke(() =>
                 {
-                    var app = Applications.FirstOrDefault(a => a.ProcessName == _lastActiveProcess);
+                    var app = ApplicationInfos.FirstOrDefault(a => a.ProcessInfo.ProcessName == _lastActiveProcess);
                     if (app != null)
                     {
-                        app.UsageTime += DateTime.Now - _lastActiveTime;
-                        OnPropertyChanged(nameof(Applications));
+                        app.TimeElapsed += DateTime.Now - _lastActiveTime; // put it in the model
+                        OnPropertyChanged(nameof(ApplicationInfos));
                     }
                 });
             }
@@ -116,28 +121,29 @@ namespace WinTracker.ViewModels
         private string GetProcessNameFromWindow(IntPtr hWnd)
         {
             uint pid;
-            GetWindowThreadProcessId(hWnd, out pid);
+            NativeMethods.GetWindowThreadProcessId(hWnd, out pid);
             return GetProcessNameById(pid);
         }
 
+        /// <summary>
+        /// Get ProcessNameById return empty string if exeception raised.
+        /// </summary>
+        /// <param name="pid"></param>
+        /// <returns></returns>
         private static string GetProcessNameById(uint pid)
         {
-            Process p = Process.GetProcessById((int)pid);
+            try
+            {
+                Process p = Process.GetProcessById((int)pid);
 
-            return p.MainModule is null ? p.ProcessName : p.MainModule.FileName;
+                return p.MainModule is null ? p.ProcessName : p.MainModule.FileVersionInfo.ProductName ?? p.ProcessName;
+            }
+            catch(Exception ex) 
+            {
+                Debug.WriteLine(ex.Message);
+                return string.Empty;
+            }
         }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowTextLength(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
