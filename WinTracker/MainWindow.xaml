@@ -7,7 +7,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ProcessId" Binding="{Binding ProcessInfo.ProcessId}" Width="*"/>
                 <DataGridTextColumn Header="Application" Binding="{Binding ProcessInfo.ProcessName}" Width="*"/>
-                <DataGridTextColumn Header="Usage Time" Binding="{Binding TimeElapsed}" Width="*"/>
+                <DataGridTextColumn Header="Time Elpased" Binding="{Binding TimeElapsed,StringFormat=hh\\:mm\\:ss}" Width="*"/>
                 <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

@@ -14,15 +14,29 @@ using WinTracker.Communication;
 
 namespace WinTracker.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
 
-        public ObservableCollection<ApplicationInfo> ApplicationInfos { get; set; }
+
+        private ObservableCollection<ApplicationInfo> applicationInfos;
+        public ObservableCollection<ApplicationInfo> ApplicationInfos
+        {
+            get { return applicationInfos; }
+            set
+            {
+                if (value != applicationInfos)
+                {
+                    applicationInfos = value;
+                    NotifyPropertyChanged(nameof(ApplicationInfos));
+                }
+            }
+        }
+
         private DateTime _lastActiveTime;
         private Dispatcher _dispatcher;
         private string _lastActiveProcess;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public MainWindowViewModel()
         {
@@ -45,7 +59,23 @@ namespace WinTracker.ViewModels
                 Process? process = ProcessUtils.GetForegroundProcess();
                 if (process != null)
                 {
-                    ApplicationInfos.Add(ApplicationInfo.ConvertFrom(process));
+                    ApplicationInfo appInfo = ApplicationInfo.ConvertFrom(process);
+                    var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                    if (usedAppInfo is null)
+                    {
+                        _dispatcher.Invoke(() =>
+                        {
+                            ApplicationInfos.Add(appInfo);
+                        });
+                    }
+                    else
+                    {
+                        _dispatcher.Invoke(() =>
+                        {
+                            usedAppInfo.Update();
+                        });
+
+                    }
                 }
                 Thread.Sleep(1000);
             }
@@ -71,9 +101,12 @@ namespace WinTracker.ViewModels
             }
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected void NotifyPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -10,8 +11,12 @@ using System.Threading.Tasks;
 
 namespace WinTracker.Models
 {
-    public class ApplicationInfo
+    public class ApplicationInfo : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+        private TimeSpan _timeElapsed;
         public Guid Guid { get; set; }
 
         public Icon? Icon { get; set; }
@@ -20,7 +25,13 @@ namespace WinTracker.Models
         public Category Category { get; set; }
 
         public State State { get; set; }
-        public TimeSpan TimeElapsed { get; set; }
+        public TimeSpan TimeElapsed { get 
+            {
+                return _timeElapsed; 
+            } set 
+            { _timeElapsed = value; 
+                OnPropertyChanged(nameof(TimeElapsed)); 
+            } }
 
         private TimeSpan TimeCreated { get; }
 
@@ -54,6 +65,16 @@ namespace WinTracker.Models
             return (new
                 (new ( (uint)process.Id, process.MainModule.FileVersionInfo.ProductName), 
                 new()));
+        }
+
+        internal void Update()
+        {
+            TimeElapsed = DateTime.Now.TimeOfDay - TimeCreated;
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
