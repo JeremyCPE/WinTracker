@@ -17,6 +17,7 @@ namespace WinTracker.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
 
+        public List<string> Logger { get; set; }
 
         private ObservableCollection<ApplicationInfo> applicationInfos;
         public ObservableCollection<ApplicationInfo> ApplicationInfos
@@ -48,6 +49,7 @@ namespace WinTracker.ViewModels
 
         private void StartTracking()
         {
+            Logger = ["[DEBUG] Start tracking..."];
             Thread activeWindowThread = new Thread(new ThreadStart(TrackActiveWindow));
             activeWindowThread.Start();
         }
@@ -65,6 +67,8 @@ namespace WinTracker.ViewModels
                         var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
                         if (usedAppInfo is null)
                         {
+                           Debug.WriteLine("[INFO] New app found !");
+
                             _dispatcher.Invoke(() =>
                             {
                                 ApplicationInfos.Add(appInfo);
@@ -74,6 +78,8 @@ namespace WinTracker.ViewModels
                         {
                             _dispatcher.Invoke(() =>
                             {
+                               Debug.WriteLine("[DEBUG] Update of a known app!");
+
                                 usedAppInfo.Update();
                             });
 
@@ -82,31 +88,11 @@ namespace WinTracker.ViewModels
                     Thread.Sleep(1000);
                 }
             }
-            catch (Exception ex) { 
-                Debug.WriteLine(ex.ToString());
+            catch (Exception ex) {
+               Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
+
             }
         }
-
-        /// <summary>
-        /// Get ProcessNameById return empty string if exeception raised.
-        /// </summary>
-        /// <param name="pid"></param>
-        /// <returns></returns>
-        private static string GetProcessNameById(uint pid)
-        {
-            try
-            {
-                Process p = Process.GetProcessById((int)pid);
-
-                return p.MainModule is null ? p.ProcessName : p.MainModule.FileVersionInfo.ProductName ?? p.ProcessName;
-            }
-            catch(Exception ex) 
-            {
-                Debug.WriteLine(ex.Message);
-                return string.Empty;
-            }
-        }
-
         protected void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)

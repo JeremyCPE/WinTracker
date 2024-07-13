@@ -38,7 +38,7 @@ namespace WinTracker.Models
                 OnPropertyChanged(nameof(TimeElapsed)); 
             } }
 
-        private TimeSpan TimeCreated { get; }
+        private TimeSpan TimeLastStop { get; set; }
 
 
         public ApplicationInfo(ProcessInfo processInfo, Category category)
@@ -48,7 +48,7 @@ namespace WinTracker.Models
             this.Category = category;
 
             this.TimeElapsed = TimeSpan.Zero;
-            this.TimeCreated = DateTime.Now.TimeOfDay;
+            this.TimeLastStop = DateTime.Now.TimeOfDay;
             Start();
 
         }
@@ -57,7 +57,7 @@ namespace WinTracker.Models
         {
            if(State is State.Stopped) return;
            State = State.Stopped;
-           TimeElapsed = DateTime.Now.TimeOfDay - TimeCreated;
+           this.TimeLastStop = DateTime.Now.TimeOfDay;
         }
 
         public void Start()
@@ -98,7 +98,7 @@ namespace WinTracker.Models
 
         internal void Update()
         {
-            TimeElapsed = DateTime.Now.TimeOfDay - TimeCreated;
+            TimeElapsed = DateTime.Now.TimeOfDay - TimeLastStop;
         }
 
         protected void OnPropertyChanged(string propertyName)

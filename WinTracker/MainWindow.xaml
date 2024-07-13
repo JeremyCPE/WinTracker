@@ -3,17 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Application Usage Tracker" Height="350" Width="525">
     <Grid>
-    <Grid.Resources>
+        <Grid.Resources>
             <DataTemplate x:Key="ApplicationTemplate">
                 <Image Width="32" Height="32" Source="{Binding Image}"></Image>
             </DataTemplate>
         </Grid.Resources>
         <DataGrid ItemsSource="{Binding ApplicationInfos}" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ProcessId" Binding="{Binding ProcessInfo.ProcessId}" Width="*"/>
-                <DataGridTemplateColumn Header="Logo" CellTemplate="{StaticResource ApplicationTemplate}" Width="*"/>
-                <DataGridTextColumn Header="Application" Binding="{Binding ProcessInfo.ProcessName}" Width="*"/>
-                <DataGridTextColumn Header="Time Elpased" Binding="{Binding TimeElapsed,StringFormat=hh\\:mm\\:ss}" Width="*"/>
+                <DataGridTextColumn Header="ProcessId" Binding="{Binding ProcessInfo.ProcessId}" Width="*" IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="Logo" CellTemplate="{StaticResource ApplicationTemplate}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Application" Binding="{Binding ProcessInfo.ProcessName}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Time Elpased" Binding="{Binding TimeElapsed,StringFormat=hh\\:mm\\:ss}" Width="*" IsReadOnly="True"/>
                 <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
