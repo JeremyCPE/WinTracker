@@ -8,6 +8,11 @@ using System.Linq;
 using System.Management;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
+using System.Windows;
+using System.Windows.Media;
+using System.IO;
 
 namespace WinTracker.Models
 {
@@ -19,7 +24,7 @@ namespace WinTracker.Models
         private TimeSpan _timeElapsed;
         public Guid Guid { get; set; }
 
-        public Icon? Icon { get; set; }
+        public ImageSource Image { get; set; }
         public ProcessInfo ProcessInfo { get; set; }
         
         public Category Category { get; set; }
@@ -62,16 +67,31 @@ namespace WinTracker.Models
 
         internal static ApplicationInfo ConvertFrom(Process process)
         {
+
             ApplicationInfo applicationInfo = new
                 (new ( (uint)process.Id, process.MainModule.FileVersionInfo.ProductName), 
                 new());
             try
             {
-                Icon? icon = Icon.ExtractAssociatedIcon(process.MainModule.FileName);
-                applicationInfo.Icon = icon;
-
+                using (MemoryStream strm = new MemoryStream())
+                {
+                    Icon? icon = Icon.ExtractAssociatedIcon(process.MainModule.FileName);
+                    if (icon != null)
+                    {
+                        icon.Save(strm);
+                        applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                    }
+                    else
+                    {
+                        // have a default image 
+                    }
+                }
+                
             }
-            catch { }
+            catch(Exception ex) 
+            {
+                Debug.WriteLine(ex.ToString());
+            }
             return applicationInfo;
 
         }
