@@ -62,9 +62,18 @@ namespace WinTracker.Models
 
         internal static ApplicationInfo ConvertFrom(Process process)
         {
-            return (new
+            ApplicationInfo applicationInfo = new
                 (new ( (uint)process.Id, process.MainModule.FileVersionInfo.ProductName), 
-                new()));
+                new());
+            try
+            {
+                Icon? icon = Icon.ExtractAssociatedIcon(process.MainModule.FileName);
+                applicationInfo.Icon = icon;
+
+            }
+            catch { }
+            return applicationInfo;
+
         }
 
         internal void Update()

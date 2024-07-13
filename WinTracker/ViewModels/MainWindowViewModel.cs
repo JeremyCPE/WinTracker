@@ -54,30 +54,36 @@ namespace WinTracker.ViewModels
 
         private void TrackActiveWindow()
         {
-            while (true)
+            try
             {
-                Process? process = ProcessUtils.GetForegroundProcess();
-                if (process != null)
+                while (true)
                 {
-                    ApplicationInfo appInfo = ApplicationInfo.ConvertFrom(process);
-                    var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
-                    if (usedAppInfo is null)
+                    Process? process = ProcessUtils.GetForegroundProcess();
+                    if (process != null)
                     {
-                        _dispatcher.Invoke(() =>
+                        ApplicationInfo appInfo = ApplicationInfo.ConvertFrom(process);
+                        var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                        if (usedAppInfo is null)
                         {
-                            ApplicationInfos.Add(appInfo);
-                        });
-                    }
-                    else
-                    {
-                        _dispatcher.Invoke(() =>
+                            _dispatcher.Invoke(() =>
+                            {
+                                ApplicationInfos.Add(appInfo);
+                            });
+                        }
+                        else
                         {
-                            usedAppInfo.Update();
-                        });
+                            _dispatcher.Invoke(() =>
+                            {
+                                usedAppInfo.Update();
+                            });
 
+                        }
                     }
+                    Thread.Sleep(1000);
                 }
-                Thread.Sleep(1000);
+            }
+            catch (Exception ex) { 
+                Debug.WriteLine(ex.ToString());
             }
         }
 
