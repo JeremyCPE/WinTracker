@@ -74,17 +74,29 @@ namespace WinTracker.Models
             State = State.Running;
         }
 
-        internal static ApplicationInfo? ConvertFrom(Process process)
+        /// <summary>
+        /// Convert a Process object to an ApplicationInfo, can return null if the Process is not reachable
+        /// </summary>
+        /// <param name="process"></param>
+        /// <returns></returns>
+        internal static ApplicationInfo? ConvertFromProcess(Process process)
         {
 
             try
             {
+                var module = process.MainModule;
+                if (module is null) return null;
+
+                var name = !string.IsNullOrEmpty(module.FileVersionInfo.ProductName) ? 
+                    module.FileVersionInfo.ProductName : process.ProcessName;
+
                 ApplicationInfo applicationInfo = new
-                    (new((uint)process.Id, process.MainModule.FileVersionInfo.ProductName),
+                    (new((uint)process.Id, name),
                     new());
+
                 using (MemoryStream strm = new MemoryStream())
                 {
-                    Icon? icon = Icon.ExtractAssociatedIcon(process.MainModule.FileName);
+                    Icon? icon = Icon.ExtractAssociatedIcon(module.FileName);
                     if (icon != null)
                     {
                         icon.Save(strm);

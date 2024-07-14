@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <ResourceDictionary Source="../Dictionary.xaml">
+        <ResourceDictionary Source="..\Dictionary.xaml">
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -30,14 +30,13 @@
 
                 <Button x:Name="CloseBtn"
                         Grid.Column="1"
-                        Grid.Row="1"
                         Height="40"
                         Width="40"
                         BorderThickness="0"
-                        Style="{StaticResource Close_btn}">
+                        Style="{StaticResource Close_btn}" Margin="20,20,0,30" Grid.RowSpan="2">
 
                     <Button.Background>
-                        <ImageBrush ImageSource="../Assets/closeBtn_default.png"/>
+                        <ImageBrush ImageSource="..\Assets\closeBtn_default.png"/>
                     </Button.Background>
 
                 </Button>
@@ -99,63 +98,10 @@
                             <!--// Toggle button default background image //-->
 
                             <ToggleButton.Background>
-
-                                <ImageBrush ImageSource="../Assets/tgBtn_default.png"
+                                <ImageBrush ImageSource="..\Assets\tgBtn_default.png"
                                             Stretch="None"/>
-
                             </ToggleButton.Background>
-
                             <!--// Toggle Button - Checked, Unchecked events //-->
-
-                            <ToggleButton.Triggers>
-
-                                <EventTrigger RoutedEvent="ToggleButton.Unchecked">
-
-                                    <BeginStoryboard>
-
-                                        <Storyboard x:Name="HideStackPanel">
-
-                                            <DoubleAnimation    
-                                                
-                                                Storyboard.TargetName="nav_pnl"
-                                                Storyboard.TargetProperty="Width"
-                                                BeginTime="0:0:0"
-                                                From="230" To="65"
-                                                Duration="0:0:0.2">
-
-                                            </DoubleAnimation>
-
-                                        </Storyboard>
-
-                                    </BeginStoryboard>
-
-                                </EventTrigger>
-
-                                <EventTrigger RoutedEvent="ToggleButton.Checked">
-
-                                    <BeginStoryboard>
-
-                                        <Storyboard x:Name="ShowStackPanel">
-
-                                            <DoubleAnimation
-                                                
-                                                Storyboard.TargetName="nav_pnl"
-                                                Storyboard.TargetProperty="Width"
-                                                BeginTime="0:0:0"
-                                                From="65" To="230"
-                                                Duration="0:0:0.3">
-
-                                            </DoubleAnimation>
-
-                                        </Storyboard>
-
-                                    </BeginStoryboard>
-
-                                </EventTrigger>
-
-                            </ToggleButton.Triggers>
-
-
                         </ToggleButton>
 
                     </Grid>
@@ -173,7 +119,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
 
-                                <Image Source="../Assets/img_home.png"
+                                <Image Source="..\Assets\img_home.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 
@@ -204,7 +150,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
 
-                                <Image Source="../Assets/img_contact.png"
+                                <Image Source="..\Assets\img_contact.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 
@@ -235,7 +181,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
 
-                                <Image Source="../Assets/img_message.png"
+                                <Image Source="..\Assets\img_message.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 
@@ -256,38 +202,6 @@
                             </ListViewItem.ToolTip>
 
                         </ListViewItem>
-
-                        <!--// Maps //-->
-
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" 
-                                      >
-
-                            <StackPanel Orientation="Horizontal"
-                                        Width="230">
-
-                                <Image Source="../Assets/img_map.png"
-                                       Stretch="None"
-                                       Margin="12,0,0,0"/>
-
-                                <TextBlock Text="Maps"
-                                           Margin="25,0,0,0"
-                                           Style="{StaticResource font_style}"/>
-
-                            </StackPanel>
-
-                            <!--// Tooltip //-->
-
-                            <ListViewItem.ToolTip>
-
-                                <ToolTip x:Name="tt_maps"
-                                         Content="Maps"
-                                         Style="{StaticResource tt_style}"/>
-
-                            </ListViewItem.ToolTip>
-
-                        </ListViewItem>
-
                         <!--// Settings //-->
 
                         <ListViewItem HorizontalAlignment="Left"
@@ -297,7 +211,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
 
-                                <Image Source="../Assets/img_setting.png"
+                                <Image Source="..\Assets\img_setting.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 
@@ -328,7 +242,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
 
-                                <Image Source="../Assets/img_signout.png"
+                                <Image Source="..\Assets\img_signout.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 

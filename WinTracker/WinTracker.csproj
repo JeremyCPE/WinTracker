@@ -17,4 +17,17 @@
     <Page Include="App.xaml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Dictionary.xaml" />
+	<Resource Include ="Assets\closeBtn_default.png"/>
+	<Resource Include ="Assets\closeBtn_MouseOver.png"/>
+	<Resource Include ="Assets\img_contact.png"/>
+	<Resource Include ="Assets\img_home.png"/>
+	<Resource Include ="Assets\img_message.png"/>
+	<Resource Include ="Assets\img_setting.png"/>
+	<Resource Include ="Assets\img_signout.png"/>
+	<Resource Include ="Assets\tgBtn_default.png"/>
+	<Resource Include ="Assets\tgBtn_MouseOver.png"/>
+  </ItemGroup>
+
 </Project>

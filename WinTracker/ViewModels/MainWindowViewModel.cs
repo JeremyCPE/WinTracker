@@ -65,7 +65,7 @@ namespace WinTracker.ViewModels
                         continue;
                     }
                     
-                    ApplicationInfo? appInfo = ApplicationInfo.ConvertFrom(process);
+                    ApplicationInfo? appInfo = ApplicationInfo.ConvertFromProcess(process);
                     if (appInfo == null)
                     {
                         if(!NotReadableList.Contains(process.Id))

@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
         <ImageBrush x:Key="tb_mouse_over"
-                    ImageSource="/Assets/tgBtn_MouseOver.png"/>
+                    ImageSource="Assets\tgBtn_MouseOver.png"/>
 
         <Style x:Key="font_style" TargetType="TextBlock">
 
@@ -39,7 +39,7 @@
 
         <!--// App Close Button Style Template //-->
 
-        <ImageBrush x:Key="CloseBtn_MouseOver" ImageSource="/Assets/closeBtn_MouseOver.png"/>
+        <ImageBrush x:Key="CloseBtn_MouseOver" ImageSource="Assets\closeBtn_MouseOver.png"/>
 
         <Style x:Key="Close_btn" TargetType="{x:Type Button}">
             <Setter Property="Template">

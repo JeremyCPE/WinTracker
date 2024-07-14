@@ -77,5 +77,10 @@
         {
             return Categories.FirstOrDefault(c => string.Equals(c.Name, categoryName, StringComparison.OrdinalIgnoreCase));
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
