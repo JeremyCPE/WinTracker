@@ -17,10 +17,13 @@ namespace WinTracker.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
 
-
         private ObservableCollection<ApplicationInfo> applicationInfos;
 
         private Guid _lastUsedApp;
+        private readonly Dispatcher _dispatcher;
+
+        public List<int> NotReadableList { get; set; } = [];
+
         public ObservableCollection<ApplicationInfo> ApplicationInfos
         {
             get { return applicationInfos; }
@@ -34,43 +37,49 @@ namespace WinTracker.ViewModels
             }
         }
 
-        private DateTime _lastActiveTime;
-        private Dispatcher _dispatcher;
-        private string _lastActiveProcess;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public MainWindowViewModel()
         {
-            ApplicationInfos = new ObservableCollection<ApplicationInfo>();
-            _lastActiveTime = DateTime.Now;
+            ApplicationInfos = [];
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();
         }
 
         private void StartTracking()
         {
-            Thread activeWindowThread = new Thread(new ThreadStart(TrackActiveWindow));
+            Thread activeWindowThread = new(new ThreadStart(TrackActiveWindow));
             activeWindowThread.Start();
         }
 
         private void TrackActiveWindow()
         {
-
                 while (true)
                 {
                 try
                 {
                     Process? process = ProcessUtils.GetForegroundProcess();
-                    if (process != null)
+                    if (IsNullOrIgnorable(process))
                     {
-                        ApplicationInfo appInfo = ApplicationInfo.ConvertFrom(process);
-                        var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
-                        _dispatcher.Invoke(() =>
+                        continue;
+                    }
+                    
+                    ApplicationInfo? appInfo = ApplicationInfo.ConvertFrom(process);
+                    if (appInfo == null)
+                    {
+                        if(!NotReadableList.Contains(process.Id))
                         {
+                            NotReadableList.Add(process.Id);
+                        }
+                        continue;
+                    }
+                    var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                    _dispatcher.Invoke(() =>
+                    {
                         if (usedAppInfo is null)
                         {
-                           Debug.WriteLine("[INFO] New app found !");
+                            Debug.WriteLine("[INFO] New app found !");
                             _lastUsedApp = appInfo.Guid;
                             _dispatcher.Invoke(() =>
                             {
@@ -79,21 +88,23 @@ namespace WinTracker.ViewModels
                         }
                         else
                         {
-
-                               Debug.WriteLine("[DEBUG] Update of a known app!");
-                                _lastUsedApp = usedAppInfo.Guid;
-                                usedAppInfo.Update();
+                            Debug.WriteLine("[DEBUG] Update of a known app!");
+                            _lastUsedApp = usedAppInfo.Guid;
+                            usedAppInfo.Update();
                         }
-                            UpdateStatusOfUnusedApp();
-                        });
-                    }
+                        UpdateStatusOfUnusedApp();
+                    });
                     Thread.Sleep(1000);
                 }
             catch (Exception ex) {
                Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
+            }
+            }
+        }
 
-            }
-            }
+        private bool IsNullOrIgnorable(Process? process)
+        {
+            return process == null || NotReadableList.Contains(process.Id);
         }
 
         private void UpdateStatusOfUnusedApp()
@@ -103,10 +114,7 @@ namespace WinTracker.ViewModels
 
         protected void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

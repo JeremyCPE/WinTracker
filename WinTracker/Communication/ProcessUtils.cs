@@ -11,10 +11,17 @@ namespace WinTracker.Communication
     {
         public static Process? GetForegroundProcess()
         {
-            IntPtr hWnd = NativeMethods.GetForegroundWindow();
-            NativeMethods.GetWindowThreadProcessId(hWnd, out uint processID);
-            return Process.GetProcessById(Convert.ToInt32(processID)); // Get it as a C# obj.;
-
+            try
+            {
+                IntPtr hWnd = NativeMethods.GetForegroundWindow();
+                NativeMethods.GetWindowThreadProcessId(hWnd, out uint processID);
+                return Process.GetProcessById(Convert.ToInt32(processID)); // Get it as a C# obj.;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
     }
 }

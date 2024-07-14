@@ -74,14 +74,14 @@ namespace WinTracker.Models
             State = State.Running;
         }
 
-        internal static ApplicationInfo ConvertFrom(Process process)
+        internal static ApplicationInfo? ConvertFrom(Process process)
         {
 
-            ApplicationInfo applicationInfo = new
-                (new ( (uint)process.Id, process.MainModule.FileVersionInfo.ProductName), 
-                new());
             try
             {
+                ApplicationInfo applicationInfo = new
+                    (new((uint)process.Id, process.MainModule.FileVersionInfo.ProductName),
+                    new());
                 using (MemoryStream strm = new MemoryStream())
                 {
                     Icon? icon = Icon.ExtractAssociatedIcon(process.MainModule.FileName);
@@ -95,13 +95,14 @@ namespace WinTracker.Models
                         // have a default image 
                     }
                 }
+                return applicationInfo;
                 
             }
             catch(Exception ex) 
             {
                 Debug.WriteLine(ex.ToString());
+                return null;
             }
-            return applicationInfo;
 
         }
 
