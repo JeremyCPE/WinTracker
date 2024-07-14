@@ -22,14 +22,23 @@ namespace WinTracker.Models
 
 
         private TimeSpan _timeElapsed;
+
+        private State _state;
         public Guid Guid { get; set; }
 
-        public ImageSource Image { get; set; }
+        public ImageSource? Image { get; set; }
         public ProcessInfo ProcessInfo { get; set; }
         
         public Category Category { get; set; }
 
-        public State State { get; set; }
+        public State State { get 
+            { 
+                return _state; 
+            } set 
+            { _state = value; 
+                OnPropertyChanged(nameof(State)); 
+            } }
+
         public TimeSpan TimeElapsed { get 
             {
                 return _timeElapsed; 
@@ -98,7 +107,8 @@ namespace WinTracker.Models
 
         internal void Update()
         {
-            TimeElapsed = DateTime.Now.TimeOfDay - TimeLastStop;
+            this.State = State.Running;
+            TimeElapsed += TimeSpan.FromSeconds(1);
         }
 
         protected void OnPropertyChanged(string propertyName)

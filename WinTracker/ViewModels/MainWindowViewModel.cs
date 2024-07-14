@@ -17,9 +17,10 @@ namespace WinTracker.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
 
-        public List<string> Logger { get; set; }
 
         private ObservableCollection<ApplicationInfo> applicationInfos;
+
+        private Guid _lastUsedApp;
         public ObservableCollection<ApplicationInfo> ApplicationInfos
         {
             get { return applicationInfos; }
@@ -49,26 +50,28 @@ namespace WinTracker.ViewModels
 
         private void StartTracking()
         {
-            Logger = ["[DEBUG] Start tracking..."];
             Thread activeWindowThread = new Thread(new ThreadStart(TrackActiveWindow));
             activeWindowThread.Start();
         }
 
         private void TrackActiveWindow()
         {
-            try
-            {
+
                 while (true)
+                {
+                try
                 {
                     Process? process = ProcessUtils.GetForegroundProcess();
                     if (process != null)
                     {
                         ApplicationInfo appInfo = ApplicationInfo.ConvertFrom(process);
                         var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                        _dispatcher.Invoke(() =>
+                        {
                         if (usedAppInfo is null)
                         {
                            Debug.WriteLine("[INFO] New app found !");
-
+                            _lastUsedApp = appInfo.Guid;
                             _dispatcher.Invoke(() =>
                             {
                                 ApplicationInfos.Add(appInfo);
@@ -76,23 +79,28 @@ namespace WinTracker.ViewModels
                         }
                         else
                         {
-                            _dispatcher.Invoke(() =>
-                            {
+
                                Debug.WriteLine("[DEBUG] Update of a known app!");
-
+                                _lastUsedApp = usedAppInfo.Guid;
                                 usedAppInfo.Update();
-                            });
-
                         }
+                            UpdateStatusOfUnusedApp();
+                        });
                     }
                     Thread.Sleep(1000);
                 }
-            }
             catch (Exception ex) {
                Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
 
             }
+            }
         }
+
+        private void UpdateStatusOfUnusedApp()
+        {
+            ApplicationInfos.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop()); 
+        }
+
         protected void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
