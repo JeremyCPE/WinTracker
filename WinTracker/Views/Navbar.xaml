@@ -93,36 +93,6 @@
 
                         </ListViewItem>
 
-                        <!--// Contacts //-->
-
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" 
-                                      >
-
-                            <StackPanel Orientation="Horizontal"
-                                        Width="230">
-
-                                <Image Source="..\Assets\img_contact.png"
-                                       Stretch="None"
-                                       Margin="12,0,0,0"/>
-
-                                <TextBlock Text="Contacts"
-                                           Margin="25,0,0,0"
-                                           Style="{StaticResource font_style}"/>
-
-                            </StackPanel>
-
-                            <!--// Tooltip //-->
-
-                            <ListViewItem.ToolTip>
-
-                                <ToolTip x:Name="tt_contacts"
-                                         Content="Contacts"
-                                         Style="{StaticResource tt_style}"/>
-
-                            </ListViewItem.ToolTip>
-
-                        </ListViewItem>
 
                         <!--// Messages //-->
 
@@ -133,11 +103,11 @@
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
 
-                                <Image Source="..\Assets\img_message.png"
+                                <Image Source="..\Assets\img_dashboard.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 
-                                <TextBlock Text="Messages"
+                                <TextBlock Text="Dashboard"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource font_style}"/>
 
