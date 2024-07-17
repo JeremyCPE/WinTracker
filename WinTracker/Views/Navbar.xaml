@@ -14,40 +14,13 @@
         <Grid>
             <!--// App Close Button //-->
 
-            <Grid>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="30"/>
-                </Grid.ColumnDefinitions>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Button x:Name="CloseBtn"
-                        Grid.Column="1"
-                        Height="40"
-                        Width="40"
-                        BorderThickness="0"
-                        Style="{StaticResource Close_btn}" Margin="20,20,0,30" Grid.RowSpan="2">
-
-                    <Button.Background>
-                        <ImageBrush ImageSource="..\Assets\closeBtn_default.png"/>
-                    </Button.Background>
-
-                </Button>
-
-            </Grid>
 
 
             <!--// Navigation Panel //-->
 
             <Grid   x:Name="nav_pnl"
                     HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
                     Width="65"
                     Background="#2E333A">
 
@@ -83,33 +56,12 @@
 
                         </TextBlock>
 
-                        <!--// Toggle Button //-->
-
-                        <ToggleButton x:Name="Tg_Btn"
-                                      Grid.Column="0"
-                                      VerticalAlignment="Center"
-                                      HorizontalAlignment="Left"
-                                      Margin="18,-20,0,0"
-                                      Height="30"
-                                      Width="30"
-                                      BorderThickness="0"
-                                      Style="{StaticResource tb_style}">
-
-                            <!--// Toggle button default background image //-->
-
-                            <ToggleButton.Background>
-                                <ImageBrush ImageSource="..\Assets\tgBtn_default.png"
-                                            Stretch="None"/>
-                            </ToggleButton.Background>
-                            <!--// Toggle Button - Checked, Unchecked events //-->
-                        </ToggleButton>
-
                     </Grid>
                     <!--// ListView with menu list items //-->
                     <ListView  x:Name="LV"
                                Background="Transparent"
                                BorderBrush="Transparent"
-                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="424">
 
 
                         <ListViewItem HorizontalAlignment="Left"
