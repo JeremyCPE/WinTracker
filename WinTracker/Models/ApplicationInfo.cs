@@ -18,7 +18,7 @@ namespace WinTracker.Models
 {
     public class ApplicationInfo : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
 
         private TimeSpan _timeElapsed;
@@ -26,6 +26,7 @@ namespace WinTracker.Models
         private State _state;
         public Guid Guid { get; set; }
 
+        public DateOnly DateOnly { get; set; }
         public ImageSource? Image { get; set; }
         public ProcessInfo ProcessInfo { get; set; }
         
@@ -53,6 +54,7 @@ namespace WinTracker.Models
         public ApplicationInfo(ProcessInfo processInfo, Category category)
         {
             this.Guid = Guid.NewGuid();
+            this.DateOnly = DateOnly.FromDateTime(DateTime.Now);
             this.ProcessInfo = processInfo;
             this.Category = category;
 
