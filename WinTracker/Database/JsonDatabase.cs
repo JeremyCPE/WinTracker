@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using WinTracker.Dtos;
 using WinTracker.Models;
 
 namespace WinTracker.Database
@@ -14,13 +15,13 @@ namespace WinTracker.Database
         private static readonly string DatabaseFilePath = "database.json";
 
 
-        public static async Task Save(ApplicationInfo applicationInfo)
+        public static async Task Save(ApplicationInfoDto applicationInfoDto)
         {
-            var json = JsonSerializer.Serialize(applicationInfo);
+            var json = JsonSerializer.Serialize(applicationInfoDto);
             await File.AppendAllTextAsync(DatabaseFilePath, json).ConfigureAwait(false);
         }
 
-        public List<ApplicationInfo> Load()
+        public static List<ApplicationInfo> Load()
         {
             if (!File.Exists(DatabaseFilePath))
             {
@@ -28,8 +29,8 @@ namespace WinTracker.Database
             }
 
             var json = File.ReadAllText(DatabaseFilePath);
-            var ret = JsonSerializer.Deserialize<List<ApplicationInfo>>(json);
-            if(ret != null) { return ret; }
+            var appInfoDtos = JsonSerializer.Deserialize<List<ApplicationInfoDto>>(json);
+            if(appInfoDtos is not null) { return ApplicationInfoDto.ToInfoList(appInfoDtos); }
 
             return new List<ApplicationInfo>();
         }

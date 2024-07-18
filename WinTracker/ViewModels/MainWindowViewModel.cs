@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using WinTracker.Models;
 using WinTracker.Communication;
+using WinTracker.Database;
 
 namespace WinTracker.ViewModels
 {
@@ -42,7 +43,8 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            ApplicationInfos = [];
+            ApplicationInfos = new ObservableCollection<ApplicationInfo> (JsonDatabase.Load());
+
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();
         }
@@ -93,6 +95,8 @@ namespace WinTracker.ViewModels
                             usedAppInfo.Update();
                         }
                         UpdateStatusOfUnusedApp();
+                        
+                       
                     });
                     Thread.Sleep(1000);
                 }
