@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using WinTracker.Models;
 
 namespace WinTracker.Dtos
@@ -18,15 +19,8 @@ namespace WinTracker.Dtos
 
         public TimeSpan TimeElapsed { get; set; }
 
-        public static ApplicationInfoDto ConvertFromApplicationInfo(ApplicationInfo applicationInfo)
-            => new ApplicationInfoDto
-            {
-                Guid = applicationInfo.Guid,
-                DateOnly = applicationInfo.DateOnly,
-                ProcessInfo = applicationInfo.ProcessInfo,
-                CategoryDto = CategoryDto.From(applicationInfo.Category),
-                TimeElapsed = applicationInfo.TimeElapsed,
-            };
+        public ImageSource? Image { get; set; }
+
 
         internal static List<ApplicationInfo> ToInfoList(List<ApplicationInfoDto> appInfoDtos)
         {
@@ -42,7 +36,8 @@ namespace WinTracker.Dtos
                 Guid = appInfoDto.Guid,
                 DateOnly = appInfoDto.DateOnly,
                 TimeElapsed = appInfoDto.TimeElapsed,
-                State = State.Stopped
+                State = State.Stopped,
+                Image = appInfoDto.Image
             };
 
         }

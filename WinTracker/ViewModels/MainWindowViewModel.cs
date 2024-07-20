@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using WinTracker.Models;
 using WinTracker.Communication;
 using WinTracker.Database;
+using WinTracker.Dtos;
 
 namespace WinTracker.ViewModels
 {
@@ -95,6 +96,7 @@ namespace WinTracker.ViewModels
                             usedAppInfo.Update();
                         }
                         UpdateStatusOfUnusedApp();
+                        JsonDatabase.Save(ApplicationInfo.ToDtoList(ApplicationInfos.ToList()));
                         
                        
                     });

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Media;
 using System.IO;
+using WinTracker.Dtos;
 
 namespace WinTracker.Models
 {
@@ -125,6 +126,24 @@ namespace WinTracker.Models
             this.State = State.Running;
             TimeElapsed += TimeSpan.FromSeconds(1);
         }
+
+        public static List<ApplicationInfoDto> ToDtoList(List<ApplicationInfo> applicationInfos) 
+        {
+            var appInfoDtos = new List<ApplicationInfoDto>();
+            applicationInfos.ForEach(appInfo => appInfoDtos.Add(ToDto(appInfo)));
+            return appInfoDtos;
+        }
+
+        public static ApplicationInfoDto ToDto(ApplicationInfo applicationInfo)
+            => new ApplicationInfoDto
+            {
+                Guid = applicationInfo.Guid,
+                DateOnly = applicationInfo.DateOnly,
+                ProcessInfo = applicationInfo.ProcessInfo,
+                CategoryDto = CategoryDto.From(applicationInfo.Category),
+                TimeElapsed = applicationInfo.TimeElapsed,
+                Image = applicationInfo.Image,
+            };
 
         protected void OnPropertyChanged(string propertyName)
         {

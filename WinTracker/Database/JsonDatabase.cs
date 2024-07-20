@@ -15,24 +15,30 @@ namespace WinTracker.Database
         private static readonly string DatabaseFilePath = "database.json";
 
 
-        public static async Task Save(ApplicationInfoDto applicationInfoDto)
+        public static void Save(List<ApplicationInfoDto> applicationInfoDto)
         {
             var json = JsonSerializer.Serialize(applicationInfoDto);
-            await File.AppendAllTextAsync(DatabaseFilePath, json).ConfigureAwait(false);
+            File.WriteAllText(DatabaseFilePath, json);
         }
 
         public static List<ApplicationInfo> Load()
         {
-            if (!File.Exists(DatabaseFilePath))
+            try
             {
+                if (!File.Exists(DatabaseFilePath))
+                {
+                    return new List<ApplicationInfo>();
+                }
+
+                var json = File.ReadAllText(DatabaseFilePath);
+                var appInfoDtos = JsonSerializer.Deserialize<List<ApplicationInfoDto>>(json);
+                if (appInfoDtos is not null) { return ApplicationInfoDto.ToInfoList(appInfoDtos); }
+
                 return new List<ApplicationInfo>();
             }
-
-            var json = File.ReadAllText(DatabaseFilePath);
-            var appInfoDtos = JsonSerializer.Deserialize<List<ApplicationInfoDto>>(json);
-            if(appInfoDtos is not null) { return ApplicationInfoDto.ToInfoList(appInfoDtos); }
-
-            return new List<ApplicationInfo>();
+            catch { 
+                return new List<ApplicationInfo>(); 
+            }
         }
 
 
