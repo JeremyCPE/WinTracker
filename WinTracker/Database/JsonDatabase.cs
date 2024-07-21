@@ -17,8 +17,15 @@ namespace WinTracker.Database
 
         public static void Save(List<ApplicationInfoDto> applicationInfoDto)
         {
-            var json = JsonSerializer.Serialize(applicationInfoDto);
-            File.WriteAllText(DatabaseFilePath, json);
+            try
+            {
+                var json = JsonSerializer.Serialize(applicationInfoDto);
+                File.WriteAllTextAsync(DatabaseFilePath, json);
+            }
+            catch(NotSupportedException ex) 
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public static List<ApplicationInfo> Load()

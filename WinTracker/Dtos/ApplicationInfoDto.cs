@@ -19,7 +19,6 @@ namespace WinTracker.Dtos
 
         public TimeSpan TimeElapsed { get; set; }
 
-        public ImageSource? Image { get; set; }
 
 
         internal static List<ApplicationInfo> ToInfoList(List<ApplicationInfoDto> appInfoDtos)
@@ -37,7 +36,6 @@ namespace WinTracker.Dtos
                 DateOnly = appInfoDto.DateOnly,
                 TimeElapsed = appInfoDto.TimeElapsed,
                 State = State.Stopped,
-                Image = appInfoDto.Image
             };
 
         }

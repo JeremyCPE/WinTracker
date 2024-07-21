@@ -96,10 +96,9 @@ namespace WinTracker.ViewModels
                             usedAppInfo.Update();
                         }
                         UpdateStatusOfUnusedApp();
-                        JsonDatabase.Save(ApplicationInfo.ToDtoList(ApplicationInfos.ToList()));
-                        
-                       
                     });
+                    JsonDatabase.Save(ApplicationInfo.ToDtoList(ApplicationInfos.ToList()));
+
                     Thread.Sleep(1000);
                 }
             catch (Exception ex) {

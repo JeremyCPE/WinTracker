@@ -142,7 +142,6 @@ namespace WinTracker.Models
                 ProcessInfo = applicationInfo.ProcessInfo,
                 CategoryDto = CategoryDto.From(applicationInfo.Category),
                 TimeElapsed = applicationInfo.TimeElapsed,
-                Image = applicationInfo.Image,
             };
 
         protected void OnPropertyChanged(string propertyName)
