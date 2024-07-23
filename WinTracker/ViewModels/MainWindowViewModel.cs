@@ -44,7 +44,9 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            ApplicationInfos = new ObservableCollection<ApplicationInfo> (JsonDatabase.Load());
+            List <ApplicationInfo> appInfos = JsonDatabase.Load();
+            appInfos.ForEach(d => d.UpdateImage());
+            ApplicationInfos = new ObservableCollection<ApplicationInfo> (appInfos);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();

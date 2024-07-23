@@ -148,5 +148,11 @@ namespace WinTracker.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        internal ApplicationInfo UpdateImage()
+        {
+            // to complete
+            return this;
+        }
     }
 }
