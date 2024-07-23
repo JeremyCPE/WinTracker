@@ -28,7 +28,10 @@ namespace WinTracker.Models
         public Guid Guid { get; set; }
 
         public DateOnly DateOnly { get; set; }
-        public ImageSource? Image { get; set; }
+        public BitmapFrame Image { get; set; }
+
+        // Use to re get the logo
+        public string FileName { get; set; }
         public ProcessInfo ProcessInfo { get; set; }
         
         public Category Category { get; set; }
@@ -97,20 +100,24 @@ namespace WinTracker.Models
                     (new((uint)process.Id, name),
                     new());
 
+                // find a way to simplify this copy paste
                 using (MemoryStream strm = new MemoryStream())
                 {
                     Icon? icon = Icon.ExtractAssociatedIcon(module.FileName);
                     if (icon != null)
                     {
+                        applicationInfo.FileName = module.FileName;
                         icon.Save(strm);
                         applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+
                     }
                     else
                     {
                         // have a default image 
                     }
+
+                    return applicationInfo;
                 }
-                return applicationInfo;
                 
             }
             catch(Exception ex) 
@@ -142,6 +149,7 @@ namespace WinTracker.Models
                 ProcessInfo = applicationInfo.ProcessInfo,
                 CategoryDto = CategoryDto.From(applicationInfo.Category),
                 TimeElapsed = applicationInfo.TimeElapsed,
+                FileName = applicationInfo.FileName,
             };
 
         protected void OnPropertyChanged(string propertyName)
@@ -149,10 +157,24 @@ namespace WinTracker.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        internal ApplicationInfo UpdateImage()
+        internal ApplicationInfo UpdateImage(ApplicationInfo applicationInfo)
         {
-            // to complete
-            return this;
+            using (MemoryStream strm = new MemoryStream())
+            {
+                Icon? icon = Icon.ExtractAssociatedIcon(applicationInfo.FileName);
+                if (icon != null)
+                {
+                    icon.Save(strm);
+                    applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+
+                }
+                else
+                {
+                    // have a default image 
+                }
+
+                return applicationInfo;
+            }
         }
     }
 }

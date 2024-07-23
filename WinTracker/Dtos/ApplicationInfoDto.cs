@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WinTracker.Models;
 
 namespace WinTracker.Dtos
@@ -14,6 +15,9 @@ namespace WinTracker.Dtos
         public DateOnly DateOnly { get; set; }
 
         public ProcessInfo ProcessInfo { get; set; }
+
+
+        public string FileName { get; set; }
 
         public CategoryDto CategoryDto { get; set; }
 
@@ -35,6 +39,7 @@ namespace WinTracker.Dtos
                 Guid = appInfoDto.Guid,
                 DateOnly = appInfoDto.DateOnly,
                 TimeElapsed = appInfoDto.TimeElapsed,
+                FileName = appInfoDto.FileName,
                 State = State.Stopped,
             };
 
