@@ -7,7 +7,7 @@ namespace WinTracker.Dtos
         public string Name { get; private set; } = "Others";
         internal static CategoryDto From(Category category)
         {
-          return new() { Name = category.Name ?? "Others" };   
+            return new() { Name = category.Name ?? "Others" };
         }
 
         internal Category To()

@@ -8,12 +8,12 @@ namespace WinTracker.Tests.Models
         public void RemoveCategory_CategoryExistsAndIsRemovable_ReturnsTrue()
         {
             // Arrange
-            var categoryName = "TestCategory";
-            
+            string categoryName = "TestCategory";
+
             Category.AddCategory(categoryName);
 
             // Act
-            var result = Category.RemoveCategory(categoryName);
+            bool result = Category.RemoveCategory(categoryName);
 
             // Assert
             Assert.True(result);
@@ -24,10 +24,10 @@ namespace WinTracker.Tests.Models
         public void RemoveCategory_CategoryDoesNotExist_ReturnsFalse()
         {
             // Arrange
-            var categoryName = "NonExistentCategory";
+            string categoryName = "NonExistentCategory";
 
             // Act
-            var result = Category.RemoveCategory(categoryName);
+            bool result = Category.RemoveCategory(categoryName);
 
             // Assert
             Assert.False(result);
@@ -37,11 +37,11 @@ namespace WinTracker.Tests.Models
         public void RemoveCategory_CategoryNotRemovable_ReturnsFalse()
         {
             // Arrange
-            var categoryName = "Windows";
+            string categoryName = "Windows";
             Category.AddCategory(categoryName);
 
             // Act
-            var result = Category.RemoveCategory(categoryName);
+            bool result = Category.RemoveCategory(categoryName);
 
             // Assert
             Assert.False(result);
@@ -52,10 +52,10 @@ namespace WinTracker.Tests.Models
         public void RemoveCategory_EmptyCategoryList_ReturnsFalse()
         {
             // Arrange
-            var categoryName = "AnyCategory";
+            string categoryName = "AnyCategory";
 
             // Act
-            var result = Category.RemoveCategory(categoryName);
+            bool result = Category.RemoveCategory(categoryName);
 
             // Assert
             Assert.False(result);

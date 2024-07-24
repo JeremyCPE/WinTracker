@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Management;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Windows.Input;
 using System.Windows.Threading;
-using WinTracker.Models;
 using WinTracker.Communication;
 using WinTracker.Database;
-using WinTracker.Dtos;
+using WinTracker.Models;
 
 namespace WinTracker.ViewModels
 {
@@ -44,9 +36,9 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            List <ApplicationInfo> appInfos = JsonDatabase.Load();
+            List<ApplicationInfo> appInfos = JsonDatabase.Load();
             appInfos.ForEach(d => d.UpdateImage(d));
-            ApplicationInfos = new ObservableCollection<ApplicationInfo> (appInfos);
+            ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();
@@ -60,8 +52,8 @@ namespace WinTracker.ViewModels
 
         private void TrackActiveWindow()
         {
-                while (true)
-                {
+            while (true)
+            {
                 try
                 {
                     Process? process = ProcessUtils.GetForegroundProcess();
@@ -69,17 +61,17 @@ namespace WinTracker.ViewModels
                     {
                         continue;
                     }
-                    
+
                     ApplicationInfo? appInfo = ApplicationInfo.ConvertFromProcess(process);
                     if (appInfo == null)
                     {
-                        if(!NotReadableList.Contains(process.Id))
+                        if (!NotReadableList.Contains(process.Id))
                         {
                             NotReadableList.Add(process.Id);
                         }
                         continue;
                     }
-                    var usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                    ApplicationInfo? usedAppInfo = ApplicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
                     _dispatcher.Invoke(() =>
                     {
                         if (usedAppInfo is null)
@@ -103,9 +95,11 @@ namespace WinTracker.ViewModels
 
                     Thread.Sleep(1000);
                 }
-            catch (Exception ex) {
-               Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
-            }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
+                }
+
             }
         }
 
@@ -116,7 +110,7 @@ namespace WinTracker.ViewModels
 
         private void UpdateStatusOfUnusedApp()
         {
-            ApplicationInfos.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop()); 
+            ApplicationInfos.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop());
         }
 
         protected void NotifyPropertyChanged(string propertyName)

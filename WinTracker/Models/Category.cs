@@ -31,7 +31,7 @@
         /// <returns></returns>
         private static bool IsRemovable(string categoryName)
         {
-            return !Default().Any(c => c.Name == categoryName); 
+            return !Default().Any(c => c.Name == categoryName);
         }
 
 
@@ -42,9 +42,9 @@
         /// <returns></returns>
         public static bool AddCategory(string categoryName)
         {
-            if(string.IsNullOrEmpty(categoryName)) return false;
+            if (string.IsNullOrEmpty(categoryName)) return false;
 
-            if(Categories.Any(c => string.Equals(c.Name,categoryName,StringComparison.OrdinalIgnoreCase))) return false; // False if name already exists.
+            if (Categories.Any(c => string.Equals(c.Name, categoryName, StringComparison.OrdinalIgnoreCase))) return false; // False if name already exists.
             Categories.Add(new(categoryName));
             return true;
         }
@@ -58,9 +58,9 @@
         {
             if (string.IsNullOrEmpty(categoryName)) return false;
 
-            if (!IsRemovable(categoryName)) return false;  
-            var category = Categories.FirstOrDefault(c => c.Name == categoryName);
-            if (category != null)
+            if (!IsRemovable(categoryName)) return false;
+            Category? category = Categories.FirstOrDefault(c => c.Name == categoryName);
+            if (category is not null)
             {
                 Categories.Remove(category);
                 return true;

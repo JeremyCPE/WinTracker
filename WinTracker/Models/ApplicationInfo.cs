@@ -1,18 +1,8 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Management;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using System.Windows;
-using System.Windows.Media;
 using System.IO;
+using System.Windows.Media.Imaging;
 using WinTracker.Dtos;
 
 namespace WinTracker.Models
@@ -33,24 +23,34 @@ namespace WinTracker.Models
         // Use to re get the logo
         public string FileName { get; set; }
         public ProcessInfo ProcessInfo { get; set; }
-        
+
         public Category Category { get; set; }
 
-        public State State { get 
-            { 
-                return _state; 
-            } set 
-            { _state = value; 
-                OnPropertyChanged(nameof(State)); 
-            } }
-
-        public TimeSpan TimeElapsed { get 
+        public State State
+        {
+            get
             {
-                return _timeElapsed; 
-            } set 
-            { _timeElapsed = value; 
-                OnPropertyChanged(nameof(TimeElapsed)); 
-            } }
+                return _state;
+            }
+            set
+            {
+                _state = value;
+                OnPropertyChanged(nameof(State));
+            }
+        }
+
+        public TimeSpan TimeElapsed
+        {
+            get
+            {
+                return _timeElapsed;
+            }
+            set
+            {
+                _timeElapsed = value;
+                OnPropertyChanged(nameof(TimeElapsed));
+            }
+        }
 
         private TimeSpan TimeLastStop { get; set; }
 
@@ -70,9 +70,9 @@ namespace WinTracker.Models
 
         public void Stop()
         {
-           if(State is State.Stopped) return;
-           State = State.Stopped;
-           this.TimeLastStop = DateTime.Now.TimeOfDay;
+            if (State is State.Stopped) return;
+            State = State.Stopped;
+            this.TimeLastStop = DateTime.Now.TimeOfDay;
         }
 
         public void Start()
@@ -90,10 +90,10 @@ namespace WinTracker.Models
 
             try
             {
-                var module = process.MainModule;
+                ProcessModule? module = process.MainModule;
                 if (module is null) return null;
 
-                var name = !string.IsNullOrEmpty(module.FileVersionInfo.ProductName) ? 
+                string name = !string.IsNullOrEmpty(module.FileVersionInfo.ProductName) ?
                     module.FileVersionInfo.ProductName : process.ProcessName;
 
                 ApplicationInfo applicationInfo = new
@@ -101,26 +101,24 @@ namespace WinTracker.Models
                     new());
 
                 // find a way to simplify this copy paste
-                using (MemoryStream strm = new MemoryStream())
+                using MemoryStream strm = new();
+                Icon? icon = Icon.ExtractAssociatedIcon(module.FileName);
+                if (icon != null)
                 {
-                    Icon? icon = Icon.ExtractAssociatedIcon(module.FileName);
-                    if (icon != null)
-                    {
-                        applicationInfo.FileName = module.FileName;
-                        icon.Save(strm);
-                        applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                    applicationInfo.FileName = module.FileName;
+                    icon.Save(strm);
+                    applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
 
-                    }
-                    else
-                    {
-                        // have a default image 
-                    }
-
-                    return applicationInfo;
                 }
-                
+                else
+                {
+                    // have a default image 
+                }
+
+                return applicationInfo;
+
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
                 return null;
@@ -134,15 +132,15 @@ namespace WinTracker.Models
             TimeElapsed += TimeSpan.FromSeconds(1);
         }
 
-        public static List<ApplicationInfoDto> ToDtoList(List<ApplicationInfo> applicationInfos) 
+        public static List<ApplicationInfoDto> ToDtoList(List<ApplicationInfo> applicationInfos)
         {
-            var appInfoDtos = new List<ApplicationInfoDto>();
+            List<ApplicationInfoDto> appInfoDtos = new();
             applicationInfos.ForEach(appInfo => appInfoDtos.Add(ToDto(appInfo)));
             return appInfoDtos;
         }
 
         public static ApplicationInfoDto ToDto(ApplicationInfo applicationInfo)
-            => new ApplicationInfoDto
+            => new()
             {
                 Guid = applicationInfo.Guid,
                 DateOnly = applicationInfo.DateOnly,
@@ -159,22 +157,20 @@ namespace WinTracker.Models
 
         internal ApplicationInfo UpdateImage(ApplicationInfo applicationInfo)
         {
-            using (MemoryStream strm = new MemoryStream())
+            using MemoryStream strm = new();
+            Icon? icon = Icon.ExtractAssociatedIcon(applicationInfo.FileName);
+            if (icon is not null)
             {
-                Icon? icon = Icon.ExtractAssociatedIcon(applicationInfo.FileName);
-                if (icon != null)
-                {
-                    icon.Save(strm);
-                    applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                icon.Save(strm);
+                applicationInfo.Image = BitmapFrame.Create(strm, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
 
-                }
-                else
-                {
-                    // have a default image 
-                }
-
-                return applicationInfo;
             }
+            else
+            {
+                // have a default image 
+            }
+
+            return applicationInfo;
         }
     }
 }

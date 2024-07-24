@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 using WinTracker.Dtos;
 using WinTracker.Models;
 
@@ -19,10 +14,10 @@ namespace WinTracker.Database
         {
             try
             {
-                var json = JsonSerializer.Serialize(applicationInfoDto);
+                string json = JsonSerializer.Serialize(applicationInfoDto);
                 File.WriteAllTextAsync(DatabaseFilePath, json);
             }
-            catch(NotSupportedException ex) 
+            catch (NotSupportedException ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -37,14 +32,15 @@ namespace WinTracker.Database
                     return new List<ApplicationInfo>();
                 }
 
-                var json = File.ReadAllText(DatabaseFilePath);
-                var appInfoDtos = JsonSerializer.Deserialize<List<ApplicationInfoDto>>(json);
+                string json = File.ReadAllText(DatabaseFilePath);
+                List<ApplicationInfoDto>? appInfoDtos = JsonSerializer.Deserialize<List<ApplicationInfoDto>>(json);
                 if (appInfoDtos is not null) { return ApplicationInfoDto.ToInfoList(appInfoDtos); }
 
                 return new List<ApplicationInfo>();
             }
-            catch { 
-                return new List<ApplicationInfo>(); 
+            catch
+            {
+                return new List<ApplicationInfo>();
             }
         }
 

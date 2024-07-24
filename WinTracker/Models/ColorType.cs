@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Drawing;
+﻿using System.Drawing;
 using WinTracker.Utils;
 
 
@@ -31,7 +30,7 @@ namespace WinTracker.Models
 
         public static Color GetColor(Category category)
         {
-            return ColorList.TryGetValue(category, out var color) ? color : DefaultColor;
+            return ColorList.TryGetValue(category, out Color color) ? color : DefaultColor;
         }
     }
 }

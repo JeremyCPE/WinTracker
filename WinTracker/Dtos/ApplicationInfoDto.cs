@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using WinTracker.Models;
+﻿using WinTracker.Models;
 
 namespace WinTracker.Dtos
 {
@@ -27,7 +20,7 @@ namespace WinTracker.Dtos
 
         internal static List<ApplicationInfo> ToInfoList(List<ApplicationInfoDto> appInfoDtos)
         {
-            var appInfos = new List<ApplicationInfo>();
+            List<ApplicationInfo> appInfos = new();
             appInfoDtos.ForEach(appInfoDto => appInfos.Add(To(appInfoDto)));
             return appInfos;
         }

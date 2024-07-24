@@ -10,6 +10,6 @@ namespace WinTracker.Models
         {
             ProcessId = processId;
             ProcessName = processName;
-        }         
+        }
     }
 }
