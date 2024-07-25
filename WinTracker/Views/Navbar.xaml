@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WinTracker.Views"
+             xmlns:local="clr-namespace:WinTracker.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -12,10 +12,6 @@
     </UserControl.Resources>
     <Grid>
         <Grid>
-            <!--// App Close Button //-->
-
-
-
             <!--// Navigation Panel //-->
 
             <Grid   x:Name="nav_pnl"
@@ -73,7 +69,8 @@
 
                                 <Image Source="..\Assets\img_home.png"
                                        Stretch="None"
-                                       Margin="12,0,0,0"/>
+                                       Margin="12,0,0,0" MouseDown ="HomeButton_Click"
+                                       />
 
                                 <TextBlock Text="Home"
                                            Margin="25,0,0,0"
@@ -105,7 +102,7 @@
 
                                 <Image Source="..\Assets\img_dashboard.png"
                                        Stretch="None"
-                                       Margin="12,0,0,0"/>
+                                       Margin="12,0,0,0" MouseDown ="DashboardButton_Click"/>
 
                                 <TextBlock Text="Dashboard"
                                            Margin="25,0,0,0"
@@ -117,8 +114,8 @@
 
                             <ListViewItem.ToolTip>
 
-                                <ToolTip x:Name="tt_messages"
-                                         Content="Messages"
+                                <ToolTip x:Name="tt_dashbaord"
+                                         Content="Dashboard"
                                          Style="{StaticResource tt_style}"/>
 
                             </ListViewItem.ToolTip>
@@ -245,6 +242,8 @@
                         </ListView.ItemContainerStyle>
 
                     </ListView>
+
+                    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
 
                 </StackPanel>
 

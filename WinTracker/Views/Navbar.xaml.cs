@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace WinTracker.Views
 {
@@ -10,6 +11,16 @@ namespace WinTracker.Views
         public Navbar()
         {
             InitializeComponent();
+        }
+
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Home());
+        }
+
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Dashboard());
         }
     }
 }

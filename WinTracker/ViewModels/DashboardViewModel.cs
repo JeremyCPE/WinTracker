@@ -3,7 +3,7 @@ using LiveChartsCore.SkiaSharpView;
 
 namespace WinTracker.ViewModels
 {
-    public class DashboardsViewModel
+    public class DashboardViewModel
     {
         public ISeries[] Series { get; set; } = new ISeries[]
         {
