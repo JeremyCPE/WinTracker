@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Input;
 using System.Windows.Threading;
 using WinTracker.Communication;
 using WinTracker.Database;
 using WinTracker.Models;
+using WinTracker.Utils;
 using WinTracker.Views;
 
 namespace WinTracker.ViewModels
@@ -14,9 +16,28 @@ namespace WinTracker.ViewModels
 
         private ObservableCollection<ApplicationInfo> applicationInfos;
 
-        public object CurrentView { get; set; }
+        private object _currentView;
+
+        public object CurrentView
+        {
+            get { return _currentView; }
+            set
+            {
+                _currentView = value;
+                NotifyPropertyChanged(nameof(CurrentView));
+            }
+        }
 
         private Guid _lastUsedApp;
+        private ICommand? _gotoHomeCommand;
+        private ICommand? _gotoDashboardCommand;
+
+
+
+        private object _viewHome;
+        private object _viewDashboard;
+
+
         private readonly Dispatcher _dispatcher;
 
         public List<int> NotReadableList { get; set; } = [];
@@ -39,7 +60,11 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            CurrentView = new Home(); //do the navigation
+            _viewHome = new Home();
+
+            _viewDashboard = new Dashboard();
+
+            CurrentView = _viewHome;
 
             List<ApplicationInfo> appInfos = JsonDatabase.Load();
             appInfos.ForEach(d => d.UpdateImage(d));
@@ -47,7 +72,10 @@ namespace WinTracker.ViewModels
 
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();
+
         }
+
+
 
         private void StartTracking()
         {
@@ -55,6 +83,46 @@ namespace WinTracker.ViewModels
             activeWindowThread.Start();
         }
 
+        public ICommand GotoHomeCommand
+        {
+            get
+            {
+                return _gotoHomeCommand ?? (_gotoHomeCommand = new RelayCommand(
+                   x =>
+                   {
+                       GotoHome();
+                   }));
+            }
+        }
+
+
+
+        public ICommand GotoView2Command
+        {
+            get
+            {
+                return _gotoDashboardCommand ?? (_gotoDashboardCommand = new RelayCommand(
+                   x =>
+                   {
+                       GotoDashboard();
+                   }));
+            }
+        }
+
+        private void GotoHome()
+        {
+            CurrentView = _viewHome;
+        }
+
+        private void GotoDashboard()
+        {
+            CurrentView = _viewDashboard;
+        }
+
+
+        /// <summary>
+        /// TODO : Move to tracking services
+        /// </summary>
         private void TrackActiveWindow()
         {
             while (true)
@@ -96,6 +164,7 @@ namespace WinTracker.ViewModels
                         }
                         UpdateStatusOfUnusedApp();
                     });
+
                     JsonDatabase.Save(ApplicationInfo.ToDtoList(ApplicationInfos.ToList()));
 
                     Thread.Sleep(1000);
@@ -122,9 +191,8 @@ namespace WinTracker.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
     }
+
 
 }
 

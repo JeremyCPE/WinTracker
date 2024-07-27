@@ -1,38 +1,29 @@
-﻿using System.ComponentModel;
+﻿using System.Windows.Input;
 
 namespace WinTracker.ViewModels
 {
-    public class NavbarViewModel : INotifyPropertyChanged
+    public class NavbarViewModel : ICommand
     {
-        private MainWindowViewModel _mainWindowViewModel;
+        private readonly MainWindowViewModel _viewModel;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private readonly Predicate<object> _canExecute;
+        private readonly Action<object> _execute;
 
+        public event EventHandler? CanExecuteChanged;
 
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
+        public NavbarViewModel()
         {
-            return true;
         }
 
-        public void Execute(object parameter)
+
+        public bool CanExecute(object? parameter)
         {
-            /*
-            if (parameter.ToString() == "Home")
-            {
-                _mainWindowViewModel.SelectedViewModel = new HomeViewModel();
-            }
-            else if (parameter.ToString() == "Account")
-            {
-                _mainWindowViewModel.SelectedViewModel = new AccountViewModel();
-            }
-            */
+            return _canExecute == null || _canExecute(parameter);
         }
 
-        protected void NotifyPropertyChanged(string propertyName)
+        public void Execute(object? parameter)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _execute(parameter);
         }
     }
 }

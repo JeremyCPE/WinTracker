@@ -17,10 +17,19 @@ namespace WinTracker.Models
         private State _state;
         public Guid Guid { get; set; }
 
+        /// <summary>
+        /// Store logs per date
+        /// </summary>
         public DateOnly DateOnly { get; set; }
+
+        /// <summary>
+        /// Logo
+        /// </summary>
         public BitmapFrame Image { get; set; }
 
-        // Use to re get the logo
+        /// <summary>
+        /// Use to re get the logo
+        /// </summary>
         public string FileName { get; set; }
         public ProcessInfo ProcessInfo { get; set; }
 
