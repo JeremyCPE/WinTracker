@@ -10,6 +10,7 @@
         <ResourceDictionary Source="..\Dictionary.xaml">
         </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid>
         <Grid>
             <!--// Navigation Panel //-->
@@ -69,7 +70,7 @@
 
                                 <Image Source="..\Assets\img_home.png"
                                        Stretch="None"
-                                       Margin="12,0,0,0" MouseDown ="HomeButton_Click"
+                                       Margin="12,0,0,0"
                                        />
 
                                 <TextBlock Text="Home"
@@ -102,7 +103,7 @@
 
                                 <Image Source="..\Assets\img_dashboard.png"
                                        Stretch="None"
-                                       Margin="12,0,0,0" MouseDown ="DashboardButton_Click"/>
+                                       Margin="12,0,0,0"/>
 
                                 <TextBlock Text="Dashboard"
                                            Margin="25,0,0,0"
@@ -243,7 +244,6 @@
 
                     </ListView>
 
-                    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
 
                 </StackPanel>
 

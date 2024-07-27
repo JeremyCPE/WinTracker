@@ -7,7 +7,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Controls:Home/>
+        <ContentControl Content="{Binding CurrentView}"/>
         <Controls:Navbar/>
     </Grid>
 </Window>

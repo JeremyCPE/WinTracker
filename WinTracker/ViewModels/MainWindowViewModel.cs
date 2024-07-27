@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using WinTracker.Communication;
 using WinTracker.Database;
 using WinTracker.Models;
+using WinTracker.Views;
 
 namespace WinTracker.ViewModels
 {
@@ -12,6 +13,8 @@ namespace WinTracker.ViewModels
     {
 
         private ObservableCollection<ApplicationInfo> applicationInfos;
+
+        public object CurrentView { get; set; }
 
         private Guid _lastUsedApp;
         private readonly Dispatcher _dispatcher;
@@ -36,6 +39,8 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
+            CurrentView = new Home(); //do the navigation
+
             List<ApplicationInfo> appInfos = JsonDatabase.Load();
             appInfos.ForEach(d => d.UpdateImage(d));
             ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
