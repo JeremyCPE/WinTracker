@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using WinTracker.Utils;
 
 namespace WinTracker.ViewModels
 {
@@ -6,13 +7,19 @@ namespace WinTracker.ViewModels
     {
         private readonly MainWindowViewModel _viewModel;
 
+        public ICommand GoToDashboardCommand { get; }
+        public ICommand GoToHomeCommand { get; }
+
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
 
         public event EventHandler? CanExecuteChanged;
 
-        public NavbarViewModel()
+        public NavbarViewModel(MainWindowViewModel mainWindowViewModel)
         {
+            _viewModel = mainWindowViewModel;
+            GoToDashboardCommand = new RelayCommand(o => _viewModel.GoToDashboard());
+            GoToHomeCommand = new RelayCommand(o => _viewModel.GoToHome());
         }
 
 

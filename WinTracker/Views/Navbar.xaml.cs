@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using WinTracker.ViewModels;
 
 namespace WinTracker.Views
 {
@@ -11,7 +10,11 @@ namespace WinTracker.Views
         public Navbar()
         {
             InitializeComponent();
-            DataContext = new NavbarViewModel();
+        }
+
+        private void ListViewItem_Selected(object sender, System.Windows.RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -34,20 +34,11 @@ namespace WinTracker.Utils
             add
             {
                 CommandManager.RequerySuggested += value;
-                CanExecuteChangedInternal += value;
             }
             remove
             {
                 CommandManager.RequerySuggested -= value;
-                CanExecuteChangedInternal -= value;
             }
-        }
-
-        private event EventHandler CanExecuteChangedInternal;
-
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChangedInternal.Raise(this);
         }
     }
 }

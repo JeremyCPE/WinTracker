@@ -24,171 +24,17 @@
                 <StackPanel x:Name="st_pnl">
 
                     <!--// Grid for the Menu Toggle Button //-->
-
-                    <Grid Height="90">
-
-                        <!--// Menu title text //-->
-
-                        <TextBlock  Grid.Row="1"
-                                    Grid.Column="0"
-                                    Margin="73,-20,0,0"
-                                    Text="M E N U"
-                                    Foreground="White"
-                                    FontSize="22"
-                                    Background="Transparent"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource font_style}">
-                            
-                            <!--// Shadow Effect //-->
-
-                            <TextBlock.Effect>
-
-                                <DropShadowEffect  BlurRadius="10"
-                                                   ShadowDepth="1"
-                                                   Direction="-90"
-                                                   Color="White"/>
-
-                            </TextBlock.Effect>
-
-                        </TextBlock>
-
-                    </Grid>
-                    <!--// ListView with menu list items //-->
                     <ListView  x:Name="LV"
                                Background="Transparent"
                                BorderBrush="Transparent"
                                ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="424">
 
 
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" 
-                                      >
-
-                            <StackPanel Orientation="Horizontal"
-                                        Width="230">
-
-                                <Image Source="..\Assets\img_home.png"
-                                       Stretch="None"
-                                       Margin="12,0,0,0"
-                                       />
-
-                                <TextBlock Text="Home"
-                                           Margin="25,0,0,0"
-                                           Style="{StaticResource font_style}"/>
-
-                            </StackPanel>
-
-                            <!--// Tooltip //-->
-
-                            <ListViewItem.ToolTip>
-
-                                <ToolTip x:Name="tt_home"
-                                         Content="Home"
-                                         Style="{StaticResource tt_style}"/>
-
-                            </ListViewItem.ToolTip>
-
-                        </ListViewItem>
-
-
-                        <!--// Messages //-->
-
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" 
-                                      >
-
-                            <StackPanel Orientation="Horizontal"
-                                        Width="230">
-
-                                <Image Source="..\Assets\img_dashboard.png"
-                                       Stretch="None"
-                                       Margin="12,0,0,0"/>
-
-                                <TextBlock Text="Dashboard"
-                                           Margin="25,0,0,0"
-                                           Style="{StaticResource font_style}"/>
-
-                            </StackPanel>
-
-                            <!--// Tooltip //-->
-
-                            <ListViewItem.ToolTip>
-
-                                <ToolTip x:Name="tt_dashbaord"
-                                         Content="Dashboard"
-                                         Style="{StaticResource tt_style}"/>
-
-                            </ListViewItem.ToolTip>
-
-                        </ListViewItem>
-                        <!--// Settings //-->
-
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" 
-                                      >
-
-                            <StackPanel Orientation="Horizontal"
-                                        Width="230">
-
-                                <Image Source="..\Assets\img_setting.png"
-                                       Stretch="None"
-                                       Margin="12,0,0,0"/>
-
-                                <TextBlock Text="Settings"
-                                           Margin="25,0,0,0"
-                                           Style="{StaticResource font_style}"/>
-
-                            </StackPanel>
-
-                            <!--// Tooltip //-->
-
-                            <ListViewItem.ToolTip>
-
-                                <ToolTip x:Name="tt_settings"
-                                         Content="Settings"
-                                         Style="{StaticResource tt_style}"/>
-
-                            </ListViewItem.ToolTip>
-
-                        </ListViewItem>
-
-                        <!--// Sign Out //-->
-
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" 
-                                      >
-
-                            <StackPanel Orientation="Horizontal"
-                                        Width="230">
-
-                                <Image Source="..\Assets\img_signout.png"
-                                       Stretch="None"
-                                       Margin="12,0,0,0"/>
-
-                                <TextBlock Text="Sign Out"
-                                           Margin="25,0,0,0"
-                                           Style="{StaticResource font_style}"/>
-
-                            </StackPanel>
-
-                            <!--// Tooltip //-->
-
-                            <ListViewItem.ToolTip>
-
-                                <ToolTip x:Name="tt_signout"
-                                         Content="Sign Out"
-                                         Style="{StaticResource tt_style}"/>
-
-                            </ListViewItem.ToolTip>
-
-                        </ListViewItem>
-
                         <!--// Listview items style template //-->
 
                         <ListView.ItemContainerStyle>
 
-                            <Style TargetType="ListViewItem">
+                            <Style TargetType="{x:Type ListViewItem}">
 
                                 <Setter Property="Template">
 
@@ -242,12 +88,132 @@
 
                         </ListView.ItemContainerStyle>
 
+
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" 
+                                      >
+
+                            <!--// Tooltip //-->
+
+                            <ListViewItem.ToolTip>
+
+                                <ToolTip x:Name="tt_home"
+                                         Content="Home"
+                                         Style="{StaticResource tt_style}"/>
+
+                            </ListViewItem.ToolTip>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+
+                                <Image Source="..\Assets\img_home.png"
+                                       Stretch="None"
+                                       Margin="12,0,0,0"
+                                       />
+
+                                <TextBlock Text="Home"
+                                           Margin="25,0,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                        </ListViewItem>
+
+
+                        <!--// Messages //-->
+
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" Selected="ListViewItem_Selected" 
+                                      >
+
+                            <!--// Tooltip //-->
+
+                            <ListViewItem.ToolTip>
+
+                                <ToolTip x:Name="tt_dashbaord"
+                                         Content="Dashboard"
+                                         Style="{StaticResource tt_style}"/>
+
+                            </ListViewItem.ToolTip>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+
+                                <Image Source="..\Assets\img_dashboard.png"
+                                       Stretch="None"
+                                       Margin="12,0,0,0" />
+
+                                <TextBlock Text="Dashboard"
+                                           Margin="25,0,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                        </ListViewItem>
+                        <!--// Settings //-->
+
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" 
+                                      >
+
+                            <!--// Tooltip //-->
+
+                            <ListViewItem.ToolTip>
+
+                                <ToolTip x:Name="tt_settings"
+                                         Content="Settings"
+                                         Style="{StaticResource tt_style}"/>
+
+                            </ListViewItem.ToolTip>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+
+                                <Image Source="..\Assets\img_setting.png"
+                                       Stretch="None"
+                                       Margin="12,0,0,0"/>
+
+                                <TextBlock Text="Settings"
+                                           Margin="25,0,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                        </ListViewItem>
+
+                        <!--// Sign Out //-->
+
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" 
+                                      >
+
+                            <!--// Tooltip //-->
+
+                            <ListViewItem.ToolTip>
+
+                                <ToolTip x:Name="tt_signout"
+                                         Content="Sign Out"
+                                         Style="{StaticResource tt_style}"/>
+
+                            </ListViewItem.ToolTip>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+
+                                <Image Source="..\Assets\img_signout.png"
+                                       Stretch="None"
+                                       Margin="12,0,0,0"/>
+
+                                <TextBlock Text="Sign Out"
+                                           Margin="25,0,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                        </ListViewItem>
+
                     </ListView>
-
-
                 </StackPanel>
-
-
             </Grid>
 
         </Grid>

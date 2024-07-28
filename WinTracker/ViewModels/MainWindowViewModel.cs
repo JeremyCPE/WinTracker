@@ -1,12 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Input;
 using System.Windows.Threading;
 using WinTracker.Communication;
 using WinTracker.Database;
 using WinTracker.Models;
-using WinTracker.Utils;
 using WinTracker.Views;
 
 namespace WinTracker.ViewModels
@@ -17,6 +15,8 @@ namespace WinTracker.ViewModels
         private ObservableCollection<ApplicationInfo> applicationInfos;
 
         private object _currentView;
+
+        public NavbarViewModel NavbarViewModel { get; }
 
         public object CurrentView
         {
@@ -29,13 +29,7 @@ namespace WinTracker.ViewModels
         }
 
         private Guid _lastUsedApp;
-        private ICommand? _gotoHomeCommand;
-        private ICommand? _gotoDashboardCommand;
 
-
-
-        private object _viewHome;
-        private object _viewDashboard;
 
 
         private readonly Dispatcher _dispatcher;
@@ -60,11 +54,8 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            _viewHome = new Home();
-
-            _viewDashboard = new Dashboard();
-
-            CurrentView = _viewHome;
+            NavbarViewModel navbarViewModel = new(this);
+            CurrentView = new Home();
 
             List<ApplicationInfo> appInfos = JsonDatabase.Load();
             appInfos.ForEach(d => d.UpdateImage(d));
@@ -75,48 +66,20 @@ namespace WinTracker.ViewModels
 
         }
 
-
-
         private void StartTracking()
         {
             Thread activeWindowThread = new(new ThreadStart(TrackActiveWindow));
             activeWindowThread.Start();
         }
 
-        public ICommand GotoHomeCommand
+        public void GoToHome()
         {
-            get
-            {
-                return _gotoHomeCommand ?? (_gotoHomeCommand = new RelayCommand(
-                   x =>
-                   {
-                       GotoHome();
-                   }));
-            }
+            CurrentView = new Home();
         }
 
-
-
-        public ICommand GotoView2Command
+        public void GoToDashboard()
         {
-            get
-            {
-                return _gotoDashboardCommand ?? (_gotoDashboardCommand = new RelayCommand(
-                   x =>
-                   {
-                       GotoDashboard();
-                   }));
-            }
-        }
-
-        private void GotoHome()
-        {
-            CurrentView = _viewHome;
-        }
-
-        private void GotoDashboard()
-        {
-            CurrentView = _viewDashboard;
+            CurrentView = new Dashboard();
         }
 
 
