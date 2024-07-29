@@ -54,7 +54,7 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            NavbarViewModel navbarViewModel = new(this);
+            NavbarViewModel = new NavbarViewModel(this);
             CurrentView = new Home();
 
             List<ApplicationInfo> appInfos = JsonDatabase.Load();

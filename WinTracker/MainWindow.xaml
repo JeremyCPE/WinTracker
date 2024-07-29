@@ -7,8 +7,14 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
+        <ContentControl Content="{Binding NavbarViewModel}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <Controls:Navbar />
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
         <ContentControl Content="{Binding CurrentView}"/>
-        <Controls:Navbar/>
     </Grid>
 </Window>
 

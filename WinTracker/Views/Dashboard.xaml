@@ -10,7 +10,7 @@
     <UserControl.DataContext>
         <local:DashboardViewModel />
     </UserControl.DataContext>
-    <Grid>
+    <Grid Margin="40,0,0,0">
         <lvc:CartesianChart
         Series="{Binding Series}">
         </lvc:CartesianChart>

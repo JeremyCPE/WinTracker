@@ -105,11 +105,12 @@
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
-
+                                <Button Background="Transparent" Command="{Binding GoToHomeCommand}">
                                 <Image Source="..\Assets\img_home.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"
                                        />
+                                </Button>
 
                                 <TextBlock Text="Home"
                                            Margin="25,0,0,0"
@@ -138,11 +139,11 @@
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
-
-                                <Image Source="..\Assets\img_dashboard.png"
+                                <Button Background="Transparent" Command="{Binding GoToDashboardCommand}">
+                                    <Image Source="..\Assets\img_dashboard.png"
                                        Stretch="None"
                                        Margin="12,0,0,0" />
-
+                                </Button>
                                 <TextBlock Text="Dashboard"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource font_style}"/>
