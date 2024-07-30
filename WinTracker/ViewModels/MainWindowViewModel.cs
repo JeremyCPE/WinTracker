@@ -99,7 +99,7 @@ namespace WinTracker.ViewModels
                     }
 
                     ApplicationInfo? appInfo = ApplicationInfo.ConvertFromProcess(process);
-                    if (appInfo == null)
+                    if (appInfo is null)
                     {
                         if (!NotReadableList.Contains(process.Id))
                         {
@@ -142,7 +142,7 @@ namespace WinTracker.ViewModels
 
         private bool IsNullOrIgnorable(Process? process)
         {
-            return process == null || NotReadableList.Contains(process.Id);
+            return process is null || NotReadableList.Contains(process.Id);
         }
 
         private void UpdateStatusOfUnusedApp()
