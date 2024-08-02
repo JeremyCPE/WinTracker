@@ -1,5 +1,8 @@
 ﻿using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView.Extensions;
+using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
+using SkiaSharp;
 using WinTracker.Utils;
 
 namespace WinTracker.ViewModels
@@ -19,22 +22,20 @@ namespace WinTracker.ViewModels
 
         public DashboardViewModel()
         {
-            IEnumerable<int> totalSeconds = TrackingServices._applicationInfos.AsEnumerable().Select(x => (int)x.TimeElapsed.TotalMinutes);
-            IEnumerable<string> processNames = TrackingServices._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName);
+            IEnumerable<double> totalSeconds = TrackingServices._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
+            string[] processNames = TrackingServices._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
 
-            /*
+
             Series =
 
-            new PieSeries((totalSeconds)
             totalSeconds.AsPieSeries((value, series) =>
             {
-                series.Values = result.Tuple.item2;
-                series.Name = _names[_index++ % _names.Length];
+                series.Name = processNames[_index++ % _names.Length];
                 series.DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer;
                 series.DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30));
             });
-            */
 
+            Series.
         }
     }
 }
