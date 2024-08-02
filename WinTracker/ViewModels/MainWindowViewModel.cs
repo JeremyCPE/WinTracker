@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using WinTracker.Communication;
 using WinTracker.Database;
 using WinTracker.Models;
+using WinTracker.Utils;
 using WinTracker.Views;
 
 namespace WinTracker.ViewModels
@@ -12,7 +13,6 @@ namespace WinTracker.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
 
-        private ObservableCollection<ApplicationInfo> applicationInfos;
 
         private object _currentView;
 
@@ -38,12 +38,12 @@ namespace WinTracker.ViewModels
 
         public ObservableCollection<ApplicationInfo> ApplicationInfos
         {
-            get { return applicationInfos; }
+            get { return TrackingServices._applicationInfos; }
             set
             {
-                if (value != applicationInfos)
+                if (value != TrackingServices._applicationInfos)
                 {
-                    applicationInfos = value;
+                    TrackingServices._applicationInfos = value;
                     NotifyPropertyChanged(nameof(ApplicationInfos));
                 }
             }
@@ -57,8 +57,7 @@ namespace WinTracker.ViewModels
             NavbarViewModel = new NavbarViewModel(this);
             CurrentView = new Home();
 
-            List<ApplicationInfo> appInfos = JsonDatabase.Load();
-            appInfos.ForEach(d => d.UpdateImage(d));
+            List<ApplicationInfo> appInfos = TrackingServices.Load();
             ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
