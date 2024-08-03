@@ -12,8 +12,8 @@
     </UserControl.DataContext>
     <Grid Margin="40,0,0,0">
         <lvc:PieChart
-            Series="{Binding Series}"
-            Title="{Binding Title}">
+            Title="{Binding Title}"
+            Series="{Binding Series}" >
         </lvc:PieChart>
     </Grid>
 </UserControl>

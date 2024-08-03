@@ -57,6 +57,8 @@ namespace WinTracker.ViewModels
             NavbarViewModel = new NavbarViewModel(this);
             CurrentView = new Home();
 
+            JsonDatabase.DeleteOldFile(); // delete oldfile on the folder
+
             List<ApplicationInfo> appInfos = TrackingServices.Load();
             ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
 

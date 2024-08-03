@@ -11,7 +11,6 @@ namespace WinTracker.ViewModels
     {
 
         private static int _index = 0;
-        private static string[] _names = new[] { "Maria", "Susan", "Charles", "Fiona", "George" };
 
         public IEnumerable<ISeries> Series { get; set; }
         public LabelVisual Title { get; set; } =
@@ -30,12 +29,11 @@ namespace WinTracker.ViewModels
 
             totalSeconds.AsPieSeries((value, series) =>
             {
-                series.Name = processNames[_index++ % _names.Length];
+                series.Name = processNames[_index++ % totalSeconds.Count()];
                 series.DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer;
                 series.DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30));
             });
 
-            Series.
         }
     }
 }
