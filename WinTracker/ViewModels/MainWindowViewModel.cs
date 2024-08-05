@@ -66,6 +66,7 @@ namespace WinTracker.ViewModels
             activeWindowThread.Start();
         }
 
+        #region Views
         public void GoToHome()
         {
             CurrentView = new Home();
@@ -75,6 +76,12 @@ namespace WinTracker.ViewModels
         {
             CurrentView = new Dashboard();
         }
+
+        public void GoToSettings()
+        {
+            CurrentView = new Settings();
+        }
+        #endregion
         protected void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

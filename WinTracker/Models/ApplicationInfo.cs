@@ -181,5 +181,21 @@ namespace WinTracker.Models
 
             return applicationInfo;
         }
+
+        internal void UpdateTime(TimeSpan timeElapsed)
+        {
+            this.TimeElapsed += timeElapsed;
+        }
+
+        /// <summary>
+        /// Compare two ApplicationInfo
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static bool Match(ApplicationInfo first, ApplicationInfo second)
+        {
+            return first.FileName == second.FileName;
+        }
     }
 }

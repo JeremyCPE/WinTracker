@@ -169,10 +169,11 @@
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
-
+                                <Button Background="Transparent" Command="{Binding GoToSettingsCommand}">
                                 <Image Source="..\Assets\img_setting.png"
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
+                                </Button>
 
                                 <TextBlock Text="Settings"
                                            Margin="25,0,0,0"
@@ -205,7 +206,7 @@
                                        Stretch="None"
                                        Margin="12,0,0,0"/>
 
-                                <TextBlock Text="Sign Out"
+                                <TextBlock Text="Exit"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource font_style}"/>
 

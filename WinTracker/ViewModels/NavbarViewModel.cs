@@ -9,6 +9,7 @@ namespace WinTracker.ViewModels
 
         public ICommand GoToDashboardCommand { get; }
         public ICommand GoToHomeCommand { get; }
+        public ICommand GoToSettingsCommand { get; }
 
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
@@ -20,6 +21,7 @@ namespace WinTracker.ViewModels
             _viewModel = mainWindowViewModel;
             GoToDashboardCommand = new RelayCommand(o => _viewModel.GoToDashboard());
             GoToHomeCommand = new RelayCommand(o => _viewModel.GoToHome());
+            GoToSettingsCommand = new RelayCommand(o => _viewModel.GoToSettings());
         }
 
 

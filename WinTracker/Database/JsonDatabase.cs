@@ -69,7 +69,20 @@ namespace WinTracker.Database
                     {
                         continue;
                     }
-                    appInfos.AddRange(Load(file));
+                    List<ApplicationInfo> tempAppInfos = Load(file);
+
+                    foreach (ApplicationInfo tempApp in tempAppInfos)
+                    {
+                        ApplicationInfo? exist = appInfos.FirstOrDefault(d => ApplicationInfo.Match(d, tempApp));
+                        if (exist is null)
+                        {
+                            appInfos.Add(tempApp);
+                        }
+                        else
+                        {
+                            exist.UpdateTime(tempApp.TimeElapsed);
+                        }
+                    }
                 }
                 return appInfos;
             }
