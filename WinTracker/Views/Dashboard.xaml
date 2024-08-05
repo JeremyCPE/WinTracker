@@ -16,4 +16,5 @@
             Series="{Binding Series}" >
         </lvc:PieChart>
     </Grid>
+    
 </UserControl>

@@ -33,7 +33,6 @@ namespace WinTracker.ViewModels
                 series.DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer;
                 series.DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30));
             });
-
         }
     }
 }

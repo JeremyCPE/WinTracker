@@ -2,6 +2,7 @@
 using System.Text.Json;
 using WinTracker.Dtos;
 using WinTracker.Models;
+using WinTracker.Utils;
 
 namespace WinTracker.Database
 {
@@ -27,9 +28,9 @@ namespace WinTracker.Database
             }
         }
 
-        public static List<ApplicationInfo> Load()
+        public static List<ApplicationInfo> Load(string? path = null)
         {
-            string path = DatabaseFilePath;
+            if (string.IsNullOrEmpty(path)) path = DatabaseFilePath;
             try
             {
                 if (!File.Exists(path))
@@ -46,6 +47,35 @@ namespace WinTracker.Database
             catch
             {
                 return new List<ApplicationInfo>();
+            }
+        }
+
+        /// <summary>
+        /// Load many file included in the Date range
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        /// <exception cref="GetManyFilesException"></exception>
+        public static List<ApplicationInfo> LoadMany(DateOnly from, DateOnly to)
+        {
+            List<ApplicationInfo> appInfos = new();
+            try
+            {
+                foreach (string file in Directory.GetFiles(DatabaseFileFolder))
+                {
+                    DateOnly creationTime = DateOnly.FromDateTime(File.GetCreationTime(file));
+                    if (creationTime < from || creationTime > to)
+                    {
+                        continue;
+                    }
+                    appInfos.AddRange(Load(file));
+                }
+                return appInfos;
+            }
+            catch (Exception ex)
+            {
+                throw new GetManyFilesException(ex.Message);
             }
         }
 
