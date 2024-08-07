@@ -5,9 +5,9 @@ namespace WinTracker.Views
     /// <summary>
     /// Logique d'interaction pour Navbar.xaml
     /// </summary>
-    public partial class Navbar : UserControl
+    public partial class Navbar : Page
     {
-        public Navbar()
+        public Navbar(Nav)
         {
             InitializeComponent();
         }

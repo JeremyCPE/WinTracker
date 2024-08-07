@@ -15,25 +15,25 @@ namespace WinTracker.Models
         private TimeSpan _timeElapsed;
 
         private State _state;
-        public Guid Guid { get; set; }
+        public Guid Guid { get; private set; }
 
         /// <summary>
         /// Store logs per date
         /// </summary>
-        public DateOnly DateOnly { get; set; }
+        public DateOnly DateOnly { get; private set; }
 
         /// <summary>
         /// Logo
         /// </summary>
-        public BitmapFrame Image { get; set; }
+        public BitmapFrame Image { get; private set; }
 
         /// <summary>
         /// Use to re get the logo
         /// </summary>
-        public string FileName { get; set; }
-        public ProcessInfo ProcessInfo { get; set; }
+        public string FileName { get; private set; }
+        public ProcessInfo ProcessInfo { get; private set; }
 
-        public Category Category { get; set; }
+        public Category Category { get; private set; }
 
         public State State
         {
@@ -75,6 +75,17 @@ namespace WinTracker.Models
             this.TimeLastStop = DateTime.Now.TimeOfDay;
             Start();
 
+        }
+
+        public ApplicationInfo(ProcessInfo processInfo, Category category, Guid guid, DateOnly dateOnly, TimeSpan timeElapsed, string fileName)
+        {
+            this.Guid = guid;
+            this.DateOnly = dateOnly;
+            this.ProcessInfo = processInfo;
+            this.Category = category;
+            this.TimeElapsed = timeElapsed;
+            this.State = State.Stopped;
+            this.FileName = fileName;
         }
 
         public void Stop()
@@ -149,15 +160,7 @@ namespace WinTracker.Models
         }
 
         public static ApplicationInfoDto ToDto(ApplicationInfo applicationInfo)
-            => new()
-            {
-                Guid = applicationInfo.Guid,
-                DateOnly = applicationInfo.DateOnly,
-                ProcessInfo = applicationInfo.ProcessInfo,
-                CategoryDto = CategoryDto.From(applicationInfo.Category),
-                TimeElapsed = applicationInfo.TimeElapsed,
-                FileName = applicationInfo.FileName,
-            };
+            => new(applicationInfo.Guid, applicationInfo.DateOnly, applicationInfo.ProcessInfo, applicationInfo.FileName, CategoryDto.From(applicationInfo.Category), applicationInfo.TimeElapsed);
 
         protected void OnPropertyChanged(string propertyName)
         {

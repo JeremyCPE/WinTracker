@@ -2,7 +2,13 @@
 {
     public class UserSettings
     {
-        public bool RunAtStart { get; set; }
-        public List<string> BlackList { get; set; }
+        public bool RunAtStart { get; private set; }
+        public List<string> BlackList { get; private set; }
+
+
+
+
+
+
     }
 }

@@ -6,9 +6,9 @@ namespace WinTracker.Models
 {
     public static class ColorType
     {
-        public static Color Color { get; set; }
+        public static Color Color { get; private set; }
 
-        public static Color DefaultColor { get; set; } = Color.Black;
+        public static Color DefaultColor { get; private set; } = Color.Black;
         public static IDictionary<Category, Color> ColorList { get; set; } = new Dictionary<Category, Color>();
 
         public static void AssignDefault()

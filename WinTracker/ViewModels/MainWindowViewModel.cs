@@ -31,12 +31,12 @@ namespace WinTracker.ViewModels
 
         public ObservableCollection<ApplicationInfo> ApplicationInfos
         {
-            get { return TrackingServices._applicationInfos; }
+            get { return TrackingService._applicationInfos; }
             set
             {
-                if (value != TrackingServices._applicationInfos)
+                if (value != TrackingService._applicationInfos)
                 {
-                    TrackingServices._applicationInfos = value;
+                    TrackingService._applicationInfos = value;
                     NotifyPropertyChanged(nameof(ApplicationInfos));
                 }
             }
@@ -52,7 +52,7 @@ namespace WinTracker.ViewModels
 
             JsonDatabase.DeleteOldFile();
 
-            List<ApplicationInfo> appInfos = TrackingServices.Load();
+            List<ApplicationInfo> appInfos = TrackingService.Load();
             ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
@@ -62,7 +62,7 @@ namespace WinTracker.ViewModels
 
         private void StartTracking()
         {
-            Thread activeWindowThread = new(() => TrackingServices.TrackActiveWindow(_dispatcher));
+            Thread activeWindowThread = new(() => TrackingService.TrackActiveWindow(_dispatcher));
             activeWindowThread.Start();
         }
 
