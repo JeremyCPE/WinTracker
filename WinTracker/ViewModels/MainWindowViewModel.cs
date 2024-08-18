@@ -74,12 +74,12 @@ namespace WinTracker.ViewModels
 
         public void GoToDashboard()
         {
-            CurrentView = new Dashboard();
+            //CurrentView = new Dashboard();
         }
 
         public void GoToSettings()
         {
-            CurrentView = new Settings();
+            //CurrentView = new Settings();
         }
         #endregion
         protected void NotifyPropertyChanged(string propertyName)

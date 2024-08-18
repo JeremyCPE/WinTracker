@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Wpf.Ui.Controls;
 
 namespace WinTracker.Views
 {
     /// <summary>
     /// Logique d'interaction pour Settings.xaml
     /// </summary>
-    public partial class Settings : UserControl
+    public partial class Settings : INavigableView<ViewModels.SettingsViewModel>
     {
-        public Settings()
+        public ViewModels.SettingsViewModel ViewModel { get; }
+        public Settings(ViewModels.SettingsViewModel viewModel)
         {
+            ViewModel = viewModel;
+            DataContext = this;
             InitializeComponent();
         }
     }
+
 }
