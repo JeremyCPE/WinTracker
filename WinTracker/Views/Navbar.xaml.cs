@@ -1,20 +1,51 @@
-﻿using System.Windows.Controls;
+﻿using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace WinTracker.Views
 {
     /// <summary>
     /// Logique d'interaction pour Navbar.xaml
     /// </summary>
-    public partial class Navbar : UserControl
+    public partial class Navbar : INavigationWindow
     {
-        public Navbar()
+        public ViewModels.NavbarViewModel ViewModel { get; set; }
+
+        public Navbar(ViewModels.NavbarViewModel viewModel, INavigationService navigationService)
         {
+            ViewModel = viewModel;
+            DataContext = this;
+
             InitializeComponent();
+
+            navigationService.SetNavigationControl(RootNavigation);
+
         }
 
-        private void ListViewItem_Selected(object sender, System.Windows.RoutedEventArgs e)
+        public INavigationView GetNavigation() => RootNavigation;
+        public void CloseWindow()
         {
+            throw new NotImplementedException();
+        }
 
+        public bool Navigate(Type pageType)
+        {
+            return RootNavigation.Navigate(pageType);
+        }
+
+        public void SetServiceProvider(IServiceProvider serviceProvider)
+        {
+            RootNavigation.SetServiceProvider(serviceProvider);
+        }
+
+        public void ShowWindow()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetPageService(IPageService pageService)
+        {
+            throw new NotImplementedException();
         }
     }
+
 }

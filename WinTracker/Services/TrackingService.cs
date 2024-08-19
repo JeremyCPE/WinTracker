@@ -7,7 +7,7 @@ using WinTracker.Models;
 
 namespace WinTracker.Utils
 {
-    public static class TrackingServices
+    public static class TrackingService
     {
         /// <summary>
         /// Cache applicationInfo

@@ -58,8 +58,8 @@ namespace WinTracker.ViewModels
         {
             ApplyDateCommand = new RelayCommand(o => ApplyDateOnClick());
 
-            IEnumerable<double> totalSeconds = TrackingServices._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
-            string[] processNames = TrackingServices._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
+            IEnumerable<double> totalSeconds = TrackingService._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
+            string[] processNames = TrackingService._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
 
             LoadSeries(totalSeconds, processNames);
 
