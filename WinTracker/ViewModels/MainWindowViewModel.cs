@@ -5,10 +5,9 @@ using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Utils;
 using WinTracker.Views;
-
 namespace WinTracker.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : ViewModel
     {
 
 
