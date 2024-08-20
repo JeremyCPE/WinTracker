@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using WinTracker.Utils;
 
 namespace WinTracker.ViewModels
 {
@@ -12,9 +11,9 @@ namespace WinTracker.ViewModels
 
         public SettingsViewModel()
         {
-
-            RunAtStartCommand = new RelayCommand(d => SetRunAtStart(RunAtStartBool));
-            LogsLengthCommand = new RelayCommand(d => SetLogsLength(LogsLength));
+            // TODO : Use other system
+            //   RunAtStartCommand = new RelayCommand(SetRunAtStart);
+            //   LogsLengthCommand = new RelayCommand(SetLogsLength);
         }
 
         public void SetRunAtStart(bool state)

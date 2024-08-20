@@ -1,5 +1,5 @@
-﻿using System.Windows.Input;
-using WinTracker.Utils;
+﻿using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace WinTracker.ViewModels
 {
@@ -19,9 +19,9 @@ namespace WinTracker.ViewModels
         public NavbarViewModel(MainWindowViewModel mainWindowViewModel)
         {
             _viewModel = mainWindowViewModel;
-            GoToDashboardCommand = new RelayCommand(o => _viewModel.GoToDashboard());
-            GoToHomeCommand = new RelayCommand(o => _viewModel.GoToHome());
-            GoToSettingsCommand = new RelayCommand(o => _viewModel.GoToSettings());
+            GoToDashboardCommand = new RelayCommand(_viewModel.GoToDashboard);
+            GoToHomeCommand = new RelayCommand(_viewModel.GoToHome);
+            GoToSettingsCommand = new RelayCommand(_viewModel.GoToSettings);
         }
 
 

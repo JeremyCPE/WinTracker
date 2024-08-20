@@ -5,11 +5,11 @@ using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Utils;
 using WinTracker.Views;
+using Wpf.Ui.Demo.Mvvm.ViewModels;
 namespace WinTracker.ViewModels
 {
     public class MainWindowViewModel : ViewModel
     {
-
 
         private object _currentView;
 

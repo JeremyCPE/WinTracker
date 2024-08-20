@@ -1,4 +1,5 @@
-﻿using LiveChartsCore;
+﻿using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView.Extensions;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
@@ -56,7 +57,7 @@ namespace WinTracker.ViewModels
 
         public DashboardViewModel()
         {
-            ApplyDateCommand = new RelayCommand(o => ApplyDateOnClick());
+            ApplyDateCommand = new RelayCommand(ApplyDateOnClick);
 
             IEnumerable<double> totalSeconds = TrackingService._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
             string[] processNames = TrackingService._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();

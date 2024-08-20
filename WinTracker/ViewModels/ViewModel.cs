@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows;
 using Wpf.Ui.Controls;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
