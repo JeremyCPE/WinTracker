@@ -26,7 +26,7 @@ namespace WinTracker.Dtos
             TimeElapsed = timeElapsed;
         }
 
-        internal static List<ApplicationInfo> ToInfoList(List<ApplicationInfoDto> appInfoDtos)
+        public static List<ApplicationInfo> ToInfoList(List<ApplicationInfoDto> appInfoDtos)
         {
             List<ApplicationInfo> appInfos = new();
             appInfoDtos.ForEach(appInfoDto => appInfos.Add(To(appInfoDto)));

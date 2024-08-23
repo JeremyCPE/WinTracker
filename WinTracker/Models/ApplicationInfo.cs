@@ -105,7 +105,7 @@ namespace WinTracker.Models
         /// </summary>
         /// <param name="process"></param>
         /// <returns></returns>
-        internal static ApplicationInfo? ConvertFromProcess(Process process)
+        public static ApplicationInfo? ConvertFromProcess(Process process)
         {
 
             try
@@ -146,7 +146,7 @@ namespace WinTracker.Models
 
         }
 
-        internal void Update()
+        public void Update()
         {
             this.State = State.Running;
             TimeElapsed += TimeSpan.FromSeconds(1);
@@ -167,7 +167,7 @@ namespace WinTracker.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        internal ApplicationInfo UpdateImage(ApplicationInfo applicationInfo)
+        public ApplicationInfo UpdateImage(ApplicationInfo applicationInfo)
         {
             using MemoryStream strm = new();
             Icon? icon = Icon.ExtractAssociatedIcon(applicationInfo.FileName);
@@ -185,7 +185,7 @@ namespace WinTracker.Models
             return applicationInfo;
         }
 
-        internal void UpdateTime(TimeSpan timeElapsed)
+        public void UpdateTime(TimeSpan timeElapsed)
         {
             this.TimeElapsed += timeElapsed;
         }
@@ -193,12 +193,11 @@ namespace WinTracker.Models
         /// <summary>
         /// Compare two ApplicationInfo
         /// </summary>
-        /// <param name="first"></param>
-        /// <param name="second"></param>
+        /// <param name="to"></param>
         /// <returns></returns>
-        public static bool Match(ApplicationInfo first, ApplicationInfo second)
+        public bool Match(ApplicationInfo to)
         {
-            return first.FileName == second.FileName;
+            return this.FileName == to.FileName;
         }
     }
 }

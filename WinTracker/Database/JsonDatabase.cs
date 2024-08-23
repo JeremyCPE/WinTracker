@@ -73,7 +73,7 @@ namespace WinTracker.Database
 
                     foreach (ApplicationInfo tempApp in tempAppInfos)
                     {
-                        ApplicationInfo? exist = appInfos.FirstOrDefault(d => ApplicationInfo.Match(d, tempApp));
+                        ApplicationInfo? exist = appInfos.FirstOrDefault(d => d.Match(tempApp));
                         if (exist is null)
                         {
                             appInfos.Add(tempApp);

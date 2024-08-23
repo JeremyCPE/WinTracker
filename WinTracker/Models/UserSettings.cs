@@ -5,10 +5,7 @@
         public bool RunAtStart { get; private set; }
         public List<string> BlackList { get; private set; }
 
-
-
-
-
+        // fill
 
     }
 }

@@ -4,7 +4,6 @@ using System.Windows.Threading;
 using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Utils;
-using WinTracker.Views;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 namespace WinTracker.ViewModels
 {
@@ -47,7 +46,7 @@ namespace WinTracker.ViewModels
         public MainWindowViewModel()
         {
             NavbarViewModel = new NavbarViewModel(this);
-            CurrentView = new Home();
+            //CurrentView = new Home();
 
             JsonDatabase.DeleteOldFile();
 
@@ -68,7 +67,7 @@ namespace WinTracker.ViewModels
         #region Views
         public void GoToHome()
         {
-            CurrentView = new Home();
+            //CurrentView = new Home();
         }
 
         public void GoToDashboard()
