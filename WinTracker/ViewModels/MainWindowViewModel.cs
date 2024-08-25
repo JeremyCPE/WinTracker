@@ -12,6 +12,10 @@ namespace WinTracker.ViewModels
 
         private object _currentView;
 
+        private TrackingService _trackingService;
+
+        private IDatabaseConnection _databaseConnection;
+
         public NavbarViewModel NavbarViewModel { get; }
 
         public object CurrentView
@@ -29,12 +33,12 @@ namespace WinTracker.ViewModels
 
         public ObservableCollection<ApplicationInfo> ApplicationInfos
         {
-            get { return TrackingService._applicationInfos; }
+            get { return _trackingService._applicationInfos; }
             set
             {
-                if (value != TrackingService._applicationInfos)
+                if (value != _trackingService._applicationInfos)
                 {
-                    TrackingService._applicationInfos = value;
+                    _trackingService._applicationInfos = value;
                     NotifyPropertyChanged(nameof(ApplicationInfos));
                 }
             }
@@ -48,9 +52,13 @@ namespace WinTracker.ViewModels
             NavbarViewModel = new NavbarViewModel(this);
             //CurrentView = new Home();
 
-            JsonDatabase.DeleteOldFile();
+            _databaseConnection = new JsonDatabase();
 
-            List<ApplicationInfo> appInfos = TrackingService.Load();
+            _trackingService = new TrackingService(_databaseConnection);
+
+            _databaseConnection.DeleteOldFile();
+
+            List<ApplicationInfo> appInfos = _trackingService.Load();
             ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
@@ -60,7 +68,7 @@ namespace WinTracker.ViewModels
 
         private void StartTracking()
         {
-            Thread activeWindowThread = new(() => TrackingService.TrackActiveWindow(_dispatcher));
+            Thread activeWindowThread = new(() => _trackingService.TrackActiveWindow(_dispatcher));
             activeWindowThread.Start();
         }
 

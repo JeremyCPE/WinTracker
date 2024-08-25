@@ -7,24 +7,31 @@ using WinTracker.Models;
 
 namespace WinTracker.Utils
 {
-    public static class TrackingService
+    public class TrackingService
     {
         /// <summary>
         /// Cache applicationInfo
         /// </summary>
-        public static ObservableCollection<ApplicationInfo> _applicationInfos;
+        public ObservableCollection<ApplicationInfo> _applicationInfos;
 
-        public static Guid _lastUsedApp;
+        public Guid _lastUsedApp;
+
+        private IDatabaseConnection _connection;
 
 
-        public static List<int> NotReadableList { get; set; } = [];
+        public List<int> NotReadableList { get; set; } = [];
 
+        public TrackingService(IDatabaseConnection databaseConnection)
+        {
+            this._connection = databaseConnection;
+            this.Load();
+        }
 
-        public static List<ApplicationInfo> Load()
+        public List<ApplicationInfo> Load()
         {
             if (_applicationInfos is null)
             {
-                List<ApplicationInfo> appInfos = JsonDatabase.Load();
+                List<ApplicationInfo> appInfos = _connection.Load();
                 appInfos.ForEach(d => d.UpdateImage(d));
                 return appInfos;
             }
@@ -35,7 +42,7 @@ namespace WinTracker.Utils
         /// <summary>
         /// Track active programs on Windows, ignore those where we don't have any info
         /// </summary>
-        public static void TrackActiveWindow(Dispatcher _dispatcher)
+        public void TrackActiveWindow(Dispatcher _dispatcher)
         {
             while (true)
             {
@@ -77,7 +84,7 @@ namespace WinTracker.Utils
                         UpdateStatusOfUnusedApp();
                     });
 
-                    JsonDatabase.Save(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
+                    _connection.Save(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
 
                     Thread.Sleep(1000);
                 }
@@ -89,12 +96,12 @@ namespace WinTracker.Utils
             }
         }
 
-        private static bool IsNullOrIgnorable(Process? process)
+        private bool IsNullOrIgnorable(Process? process)
         {
             return process is null || NotReadableList.Contains(process.Id);
         }
 
-        private static void UpdateStatusOfUnusedApp()
+        private void UpdateStatusOfUnusedApp()
         {
             _applicationInfos.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop());
         }

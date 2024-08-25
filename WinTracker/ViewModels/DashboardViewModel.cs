@@ -17,9 +17,13 @@ namespace WinTracker.ViewModels
 
         private static int _index = 0;
 
+
+
         private DateTime _toDate;
         private DateTime _fromDate;
         private IEnumerable<ISeries> _series;
+        private IDatabaseConnection _databaseConnection;
+        private TrackingService _trackingService;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -57,10 +61,13 @@ namespace WinTracker.ViewModels
 
         public DashboardViewModel()
         {
+            _databaseConnection = new JsonDatabase(); // TODO instanciate above
+            _trackingService = new TrackingService(_databaseConnection);
+
             ApplyDateCommand = new RelayCommand(ApplyDateOnClick);
 
-            IEnumerable<double> totalSeconds = TrackingService._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
-            string[] processNames = TrackingService._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
+            IEnumerable<double> totalSeconds = _trackingService._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
+            string[] processNames = _trackingService._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
 
             LoadSeries(totalSeconds, processNames);
 
@@ -70,7 +77,7 @@ namespace WinTracker.ViewModels
         }
         public void ApplyDateOnClick()
         {
-            List<ApplicationInfo> appInfos = JsonDatabase.LoadMany(DateOnly.FromDateTime(FromDate), DateOnly.FromDateTime(ToDate));
+            List<ApplicationInfo> appInfos = _databaseConnection.LoadMany(DateOnly.FromDateTime(FromDate), DateOnly.FromDateTime(ToDate));
 
             IEnumerable<double> totalSeconds = appInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
             string[] processNames = appInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();

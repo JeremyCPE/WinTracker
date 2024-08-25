@@ -6,14 +6,14 @@ using WinTracker.Utils;
 
 namespace WinTracker.Database
 {
-    public class JsonDatabase
+    public class JsonDatabase : IDatabaseConnection
     {
-        private static readonly string DatabaseFileFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + """\WinTracker\logs\""";
-        private static readonly string DatabaseFileName = "database.json";
-        private static readonly string DatabaseFilePath = DatabaseFileFolder + DateTime.Today.ToString("yyyyMMdd") + DatabaseFileName;
+        private readonly static string DatabaseFileFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + """\WinTracker\logs\""";
+        private readonly static string DatabaseFileName = "database.json";
+        private readonly static string DatabaseFilePath = DatabaseFileFolder + DateTime.Today.ToString("yyyyMMdd") + DatabaseFileName;
 
 
-        public static void Save(List<ApplicationInfoDto> applicationInfoDto)
+        public void Save(List<ApplicationInfoDto> applicationInfoDto)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace WinTracker.Database
             }
         }
 
-        public static List<ApplicationInfo> Load(string? path = null)
+        public List<ApplicationInfo> Load(string? path = null)
         {
             if (string.IsNullOrEmpty(path)) path = DatabaseFilePath;
             try
@@ -57,7 +57,7 @@ namespace WinTracker.Database
         /// <param name="to"></param>
         /// <returns></returns>
         /// <exception cref="GetManyFilesException"></exception>
-        public static List<ApplicationInfo> LoadMany(DateOnly from, DateOnly to)
+        public List<ApplicationInfo> LoadMany(DateOnly from, DateOnly to)
         {
             List<ApplicationInfo> appInfos = new();
             try
@@ -96,7 +96,7 @@ namespace WinTracker.Database
         /// Delete file olderThan the given days (default 30)
         /// </summary>
         /// <param name="olderThan"></param>
-        public static void DeleteOldFile(int olderThan = 30)
+        public void DeleteOldFile(int olderThan = 30)
         {
             try
             {
