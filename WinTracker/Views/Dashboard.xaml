@@ -7,9 +7,6 @@
       xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
-    <Page.DataContext>
-        <local:DashboardViewModel />
-    </Page.DataContext>
     <Grid Margin="65,0,0,0">
         <lvc:PieChart
             Title="{Binding Title}"

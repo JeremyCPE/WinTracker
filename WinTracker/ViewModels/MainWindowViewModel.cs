@@ -1,20 +1,35 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Threading;
 using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Utils;
+using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 namespace WinTracker.ViewModels
 {
-    public class MainWindowViewModel : ViewModel
+    public partial class MainWindowViewModel : ViewModel
     {
 
+        [ObservableProperty]
+        private string _applicationTitle = string.Empty;
+
         private object _currentView;
+
+        [ObservableProperty]
+        private ObservableCollection<object> _navigationItems = [];
+
+        [ObservableProperty]
+        private ObservableCollection<object> _navigationFooter = [];
+
+        [ObservableProperty]
+        private ObservableCollection<MenuItem> _trayMenuItems = [];
 
         private TrackingService _trackingService;
 
         private IDatabaseConnection _databaseConnection;
+        private bool _isInitialized;
 
         public NavbarViewModel NavbarViewModel { get; }
 
@@ -28,7 +43,7 @@ namespace WinTracker.ViewModels
             }
         }
 
-        private readonly Dispatcher _dispatcher;
+        private Dispatcher _dispatcher;
 
 
         public ObservableCollection<ApplicationInfo> ApplicationInfos
@@ -49,7 +64,46 @@ namespace WinTracker.ViewModels
 
         public MainWindowViewModel()
         {
-            NavbarViewModel = new NavbarViewModel(this);
+            if (!_isInitialized)
+            {
+                Initialized();
+            }
+        }
+
+        private void Initialized()
+        {
+            ApplicationTitle = "WPF UI - MVVM Demo";
+
+            NavigationItems =
+        [
+            new NavigationViewItem()
+            {
+                Content = "Home",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
+                TargetPageType = typeof(Views.Home)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Dashboard",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
+                TargetPageType = typeof(Views.Dashboard)
+            },
+        ];
+
+            NavigationFooter =
+            [
+                new NavigationViewItem()
+            {
+                Content = "Settings",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Settings24 },
+                TargetPageType = typeof(Views.Settings)
+            },
+        ];
+
+            TrayMenuItems = [new() { Header = "Home", Tag = "tray_home" }];
+
+            _isInitialized = true;
+
             //CurrentView = new Home();
 
             _databaseConnection = new JsonDatabase();
@@ -63,7 +117,6 @@ namespace WinTracker.ViewModels
 
             _dispatcher = Dispatcher.CurrentDispatcher;
             StartTracking();
-
         }
 
         private void StartTracking()
