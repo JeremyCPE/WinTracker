@@ -12,6 +12,8 @@ namespace WinTracker.Views
 
         public MainWindow(ViewModels.MainWindowViewModel viewModel, INavigationService navigationService)
         {
+
+            ViewModel = viewModel;
             InitializeComponent();
 
             DataContext = this;

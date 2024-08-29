@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Utils;
+using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 namespace WinTracker.ViewModels
@@ -33,18 +34,7 @@ namespace WinTracker.ViewModels
 
         public NavbarViewModel NavbarViewModel { get; }
 
-        public object CurrentView
-        {
-            get { return _currentView; }
-            set
-            {
-                _currentView = value;
-                NotifyPropertyChanged(nameof(CurrentView));
-            }
-        }
-
         private Dispatcher _dispatcher;
-
 
         public ObservableCollection<ApplicationInfo> ApplicationInfos
         {
@@ -62,15 +52,15 @@ namespace WinTracker.ViewModels
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(INavigationService navigationService)
         {
             if (!_isInitialized)
             {
-                Initialized();
+                InitializeViewModel();
             }
         }
 
-        private void Initialized()
+        private void InitializeViewModel()
         {
             ApplicationTitle = "WPF UI - MVVM Demo";
 
@@ -125,22 +115,6 @@ namespace WinTracker.ViewModels
             activeWindowThread.Start();
         }
 
-        #region Views
-        public void GoToHome()
-        {
-            //CurrentView = new Home();
-        }
-
-        public void GoToDashboard()
-        {
-            //CurrentView = new Dashboard();
-        }
-
-        public void GoToSettings()
-        {
-            //CurrentView = new Settings();
-        }
-        #endregion
         protected void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
