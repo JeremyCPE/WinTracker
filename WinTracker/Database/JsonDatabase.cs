@@ -13,14 +13,14 @@ namespace WinTracker.Database
         private readonly static string DatabaseFilePath = DatabaseFileFolder + DateTime.Today.ToString("yyyyMMdd") + DatabaseFileName;
 
 
-        public void Save(List<ApplicationInfoDto> applicationInfoDto)
+        public async void SaveAsync(List<ApplicationInfoDto> applicationInfoDto)
         {
             try
             {
                 if (!Directory.Exists(DatabaseFileFolder)) Directory.CreateDirectory(DatabaseFileFolder);
 
                 string json = JsonSerializer.Serialize(applicationInfoDto);
-                File.WriteAllTextAsync(DatabaseFilePath, json);
+                await File.WriteAllTextAsync(DatabaseFilePath, json);
             }
             catch (NotSupportedException ex)
             {
@@ -28,25 +28,25 @@ namespace WinTracker.Database
             }
         }
 
-        public List<ApplicationInfo> Load(string? path = null)
+        public async Task<List<ApplicationInfo>> LoadAsync(string? path = null)
         {
             if (string.IsNullOrEmpty(path)) path = DatabaseFilePath;
             try
             {
                 if (!File.Exists(path))
                 {
-                    return new List<ApplicationInfo>();
+                    return [];
                 }
 
-                string json = File.ReadAllText(path);
+                string json = await File.ReadAllTextAsync(path);
                 List<ApplicationInfoDto>? appInfoDtos = JsonSerializer.Deserialize<List<ApplicationInfoDto>>(json);
                 if (appInfoDtos is not null) { return ApplicationInfoDto.ToInfoList(appInfoDtos); }
 
-                return new List<ApplicationInfo>();
+                return [];
             }
             catch
             {
-                return new List<ApplicationInfo>();
+                return [];
             }
         }
 
@@ -57,7 +57,7 @@ namespace WinTracker.Database
         /// <param name="to"></param>
         /// <returns></returns>
         /// <exception cref="GetManyFilesException"></exception>
-        public List<ApplicationInfo> LoadMany(DateOnly from, DateOnly to)
+        public async Task<List<ApplicationInfo>> LoadManyAsync(DateOnly from, DateOnly to)
         {
             List<ApplicationInfo> appInfos = new();
             try
@@ -69,7 +69,7 @@ namespace WinTracker.Database
                     {
                         continue;
                     }
-                    List<ApplicationInfo> tempAppInfos = Load(file);
+                    List<ApplicationInfo> tempAppInfos = await LoadAsync(file);
 
                     foreach (ApplicationInfo tempApp in tempAppInfos)
                     {

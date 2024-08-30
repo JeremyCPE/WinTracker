@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Windows.Threading;
+﻿using System.Diagnostics;
 using WinTracker.Communication;
 using WinTracker.Database;
 using WinTracker.Models;
@@ -12,7 +10,7 @@ namespace WinTracker.Utils
         /// <summary>
         /// Cache applicationInfo
         /// </summary>
-        public ObservableCollection<ApplicationInfo> _applicationInfos;
+        public List<ApplicationInfo> _applicationInfos = new();
 
         public Guid _lastUsedApp;
 
@@ -24,15 +22,16 @@ namespace WinTracker.Utils
         public TrackingService(IDatabaseConnection databaseConnection)
         {
             this._connection = databaseConnection;
-            this.Load();
+            Task.Run(LoadAsync);
         }
 
-        public List<ApplicationInfo> Load()
+        public async Task<List<ApplicationInfo>> LoadAsync()
         {
             if (_applicationInfos is null)
             {
-                List<ApplicationInfo> appInfos = _connection.Load();
+                List<ApplicationInfo> appInfos = await _connection.LoadAsync();
                 appInfos.ForEach(d => d.UpdateImage(d));
+                _applicationInfos = appInfos;
                 return appInfos;
             }
             return _applicationInfos.ToList();
@@ -42,57 +41,49 @@ namespace WinTracker.Utils
         /// <summary>
         /// Track active programs on Windows, ignore those where we don't have any info
         /// </summary>
-        public void TrackActiveWindow(Dispatcher _dispatcher)
+        public async Task<List<ApplicationInfo>> TrackActiveWindowAsync()
         {
-            while (true)
+            try
             {
-                try
+                Process? process = ProcessUtils.GetForegroundProcess();
+                if (IsNullOrIgnorable(process))
                 {
-                    Process? process = ProcessUtils.GetForegroundProcess();
-                    if (IsNullOrIgnorable(process))
-                    {
-                        continue;
-                    }
-
-                    ApplicationInfo? appInfo = ApplicationInfo.ConvertFromProcess(process);
-                    if (appInfo is null)
-                    {
-                        if (!NotReadableList.Contains(process.Id))
-                        {
-                            NotReadableList.Add(process.Id);
-                        }
-                        continue;
-                    }
-                    ApplicationInfo? usedAppInfo = _applicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
-                    _dispatcher.Invoke(() =>
-                    {
-                        if (usedAppInfo is null)
-                        {
-                            Debug.WriteLine("[INFO] New app found !");
-                            _lastUsedApp = appInfo.Guid;
-                            _dispatcher.Invoke(() =>
-                            {
-                                _applicationInfos.Add(appInfo);
-                            });
-                        }
-                        else
-                        {
-                            Debug.WriteLine("[DEBUG] Update of a known app!");
-                            _lastUsedApp = usedAppInfo.Guid;
-                            usedAppInfo.Update();
-                        }
-                        UpdateStatusOfUnusedApp();
-                    });
-
-                    _connection.Save(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
-
-                    Thread.Sleep(1000);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
+                    return _applicationInfos;
                 }
 
+                ApplicationInfo? appInfo = ApplicationInfo.FromProcess(process);
+                if (appInfo is null)
+                {
+                    if (!NotReadableList.Contains(process.Id))
+                    {
+                        NotReadableList.Add(process.Id);
+                    }
+                    return _applicationInfos;
+                }
+                ApplicationInfo? usedAppInfo = _applicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                if (usedAppInfo is null)
+                {
+                    Debug.WriteLine("[INFO] New app found !");
+                    _lastUsedApp = appInfo.Guid;
+
+                    _applicationInfos.Add(appInfo);
+                }
+                else
+                {
+                    Debug.WriteLine("[DEBUG] Update of a known app!");
+                    _lastUsedApp = usedAppInfo.Guid;
+                    usedAppInfo.Update();
+                }
+                UpdateStatusOfUnusedApp();
+
+                _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
+
+                return _applicationInfos;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
+                return _applicationInfos;
             }
         }
 

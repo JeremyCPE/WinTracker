@@ -6,8 +6,8 @@ namespace WinTracker.Database
     public interface IDatabaseConnection
     {
         void DeleteOldFile(int olderThan = 30);
-        List<ApplicationInfo> Load(string? path = null);
-        List<ApplicationInfo> LoadMany(DateOnly from, DateOnly to);
-        void Save(List<ApplicationInfoDto> applicationInfoDto);
+        Task<List<ApplicationInfo>> LoadAsync(string? path = null);
+        Task<List<ApplicationInfo>> LoadManyAsync(DateOnly from, DateOnly to);
+        void SaveAsync(List<ApplicationInfoDto> applicationInfoDto);
     }
 }

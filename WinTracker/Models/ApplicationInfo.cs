@@ -25,7 +25,7 @@ namespace WinTracker.Models
         /// <summary>
         /// Logo
         /// </summary>
-        public BitmapFrame Image { get; private set; }
+        public BitmapFrame? Image { get; private set; }
 
         /// <summary>
         /// Use to re get the logo
@@ -105,7 +105,7 @@ namespace WinTracker.Models
         /// </summary>
         /// <param name="process"></param>
         /// <returns></returns>
-        public static ApplicationInfo? ConvertFromProcess(Process process)
+        public static ApplicationInfo? FromProcess(Process process)
         {
 
             try

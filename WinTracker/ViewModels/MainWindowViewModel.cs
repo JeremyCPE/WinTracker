@@ -1,10 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Threading;
-using WinTracker.Database;
-using WinTracker.Models;
-using WinTracker.Utils;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
@@ -27,28 +23,9 @@ namespace WinTracker.ViewModels
         [ObservableProperty]
         private ObservableCollection<MenuItem> _trayMenuItems = [];
 
-        private TrackingService _trackingService;
-
-        private IDatabaseConnection _databaseConnection;
         private bool _isInitialized;
 
         public NavbarViewModel NavbarViewModel { get; }
-
-        private Dispatcher _dispatcher;
-
-        public ObservableCollection<ApplicationInfo> ApplicationInfos
-        {
-            get { return _trackingService._applicationInfos; }
-            set
-            {
-                if (value != _trackingService._applicationInfos)
-                {
-                    _trackingService._applicationInfos = value;
-                    NotifyPropertyChanged(nameof(ApplicationInfos));
-                }
-            }
-        }
-
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -94,30 +71,6 @@ namespace WinTracker.ViewModels
 
             _isInitialized = true;
 
-            //CurrentView = new Home();
-
-            _databaseConnection = new JsonDatabase();
-
-            _trackingService = new TrackingService(_databaseConnection);
-
-            _databaseConnection.DeleteOldFile();
-
-            List<ApplicationInfo> appInfos = _trackingService.Load();
-            ApplicationInfos = new ObservableCollection<ApplicationInfo>(appInfos);
-
-            _dispatcher = Dispatcher.CurrentDispatcher;
-            StartTracking();
-        }
-
-        private void StartTracking()
-        {
-            Thread activeWindowThread = new(() => _trackingService.TrackActiveWindow(_dispatcher));
-            activeWindowThread.Start();
-        }
-
-        protected void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

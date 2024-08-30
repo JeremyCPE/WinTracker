@@ -75,9 +75,9 @@ namespace WinTracker.ViewModels
             ToDate = DateTime.Today;
 
         }
-        public void ApplyDateOnClick()
+        public async void ApplyDateOnClick()
         {
-            List<ApplicationInfo> appInfos = _databaseConnection.LoadMany(DateOnly.FromDateTime(FromDate), DateOnly.FromDateTime(ToDate));
+            List<ApplicationInfo> appInfos = await _databaseConnection.LoadManyAsync(DateOnly.FromDateTime(FromDate), DateOnly.FromDateTime(ToDate));
 
             IEnumerable<double> totalSeconds = appInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
             string[] processNames = appInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
