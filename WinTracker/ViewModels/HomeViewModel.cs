@@ -14,7 +14,7 @@ namespace WinTracker.ViewModels
         private IDatabaseConnection _databaseConnection;
 
         [ObservableProperty]
-        public ObservableCollection<ApplicationInfo> _applicationInfos;
+        public ICollection<ApplicationInfo> _applicationInfos;
 
         public HomeViewModel()
         {
@@ -24,8 +24,8 @@ namespace WinTracker.ViewModels
             _trackingService = new TrackingService(_databaseConnection);
             _databaseConnection.DeleteOldFile();
 
-            Task<List<ApplicationInfo>> appInfos = _trackingService.LoadAsync();
-            _applicationInfos = new ObservableCollection<ApplicationInfo>(appInfos.Result);
+            //Task<List<ApplicationInfo>> appInfos = _trackingService.LoadAsync();
+            _applicationInfos = new ObservableCollection<ApplicationInfo>();
             StartTracking();
         }
 
@@ -35,9 +35,8 @@ namespace WinTracker.ViewModels
             {
                 try
                 {
-                    List<ApplicationInfo> list = await Task.Run(_trackingService.TrackActiveWindowAsync);
-                    list.ForEach(x => { ApplicationInfos.Add(x); });
-                    Thread.Sleep(1000);
+                    ICollection<ApplicationInfo> list = await Task.Run(() => _trackingService.TrackActiveWindow(ApplicationInfos));
+                    await Task.Delay(1000);
                 }
                 catch (Exception ex)
                 {

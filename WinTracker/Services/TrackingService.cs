@@ -41,14 +41,14 @@ namespace WinTracker.Utils
         /// <summary>
         /// Track active programs on Windows, ignore those where we don't have any info
         /// </summary>
-        public async Task<List<ApplicationInfo>> TrackActiveWindowAsync()
+        public ICollection<ApplicationInfo> TrackActiveWindow(ICollection<ApplicationInfo> currentList)
         {
             try
             {
                 Process? process = ProcessUtils.GetForegroundProcess();
                 if (IsNullOrIgnorable(process))
                 {
-                    return _applicationInfos;
+                    return currentList;
                 }
 
                 ApplicationInfo? appInfo = ApplicationInfo.FromProcess(process);
@@ -58,32 +58,34 @@ namespace WinTracker.Utils
                     {
                         NotReadableList.Add(process.Id);
                     }
-                    return _applicationInfos;
+                    return currentList;
                 }
-                ApplicationInfo? usedAppInfo = _applicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                ApplicationInfo? usedAppInfo = currentList.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
                 if (usedAppInfo is null)
                 {
                     Debug.WriteLine("[INFO] New app found !");
                     _lastUsedApp = appInfo.Guid;
-
-                    _applicationInfos.Add(appInfo);
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        currentList.Add(appInfo);
+                    });
                 }
                 else
                 {
-                    Debug.WriteLine("[DEBUG] Update of a known app!");
+                    Debug.WriteLine($"[DEBUG] {DateTime.Now} Update of a known app!");
                     _lastUsedApp = usedAppInfo.Guid;
                     usedAppInfo.Update();
                 }
-                UpdateStatusOfUnusedApp();
+                UpdateStatusOfUnusedApp(currentList);
 
-                _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
+                _connection.SaveAsync(ApplicationInfo.ToDtoList(currentList.ToList()));
 
-                return _applicationInfos;
+                return currentList;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERR] An exception has been thrown, {ex.ToString}");
-                return _applicationInfos;
+                Debug.WriteLine($"[ERR] An exception has been thrown, {ex.Message}");
+                return currentList;
             }
         }
 
@@ -92,9 +94,9 @@ namespace WinTracker.Utils
             return process is null || NotReadableList.Contains(process.Id);
         }
 
-        private void UpdateStatusOfUnusedApp()
+        private void UpdateStatusOfUnusedApp(ICollection<ApplicationInfo> currentList)
         {
-            _applicationInfos.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop());
+            currentList.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop());
         }
 
     }
