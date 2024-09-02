@@ -17,12 +17,11 @@ namespace WinTracker.Utils
         private IDatabaseConnection _connection;
 
 
-        public List<int> NotReadableList { get; set; } = [];
+        public static List<int> NotReadableList { get; set; } = [];
 
         public TrackingService(IDatabaseConnection databaseConnection)
         {
             this._connection = databaseConnection;
-            Task.Run(LoadAsync);
         }
 
         public async Task<List<ApplicationInfo>> LoadAsync()
@@ -31,7 +30,6 @@ namespace WinTracker.Utils
             {
                 List<ApplicationInfo> appInfos = await _connection.LoadAsync();
                 appInfos.ForEach(d => d.UpdateImage(d));
-                _applicationInfos = appInfos;
                 return appInfos;
             }
             return _applicationInfos.ToList();

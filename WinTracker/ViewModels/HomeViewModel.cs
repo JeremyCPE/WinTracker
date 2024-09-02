@@ -24,7 +24,7 @@ namespace WinTracker.ViewModels
             _trackingService = new TrackingService(_databaseConnection);
             _databaseConnection.DeleteOldFile();
 
-            //Task<List<ApplicationInfo>> appInfos = _trackingService.LoadAsync();
+            Task<List<ApplicationInfo>> appInfos = _trackingService.LoadAsync();
             _applicationInfos = new ObservableCollection<ApplicationInfo>();
             StartTracking();
         }
