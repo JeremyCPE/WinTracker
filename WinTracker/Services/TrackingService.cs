@@ -12,12 +12,9 @@ namespace WinTracker.Utils
         /// </summary>
         public List<ApplicationInfo> _applicationInfos = new();
 
-        public Guid _lastUsedApp;
-
         private IDatabaseConnection _connection;
 
-
-        public static List<int> NotReadableList { get; set; } = [];
+        public static HashSet<int> NotReadableProcessIds { get; set; } = [];
 
         public TrackingService(IDatabaseConnection databaseConnection)
         {
@@ -30,6 +27,7 @@ namespace WinTracker.Utils
             {
                 List<ApplicationInfo> appInfos = await _connection.LoadAsync();
                 appInfos.ForEach(d => d.UpdateImage(d));
+                _applicationInfos = appInfos;
                 return appInfos;
             }
             return _applicationInfos.ToList();
@@ -39,62 +37,58 @@ namespace WinTracker.Utils
         /// <summary>
         /// Track active programs on Windows, ignore those where we don't have any info
         /// </summary>
-        public ICollection<ApplicationInfo> TrackActiveWindow(ICollection<ApplicationInfo> currentList)
+        public ICollection<ApplicationInfo> TrackActiveWindow()
         {
             try
             {
                 Process? process = ProcessUtils.GetForegroundProcess();
-                if (IsNullOrIgnorable(process))
-                {
-                    return currentList;
-                }
+                if (IsNullOrIgnorable(process)) return _applicationInfos;
 
                 ApplicationInfo? appInfo = ApplicationInfo.FromProcess(process);
                 if (appInfo is null)
                 {
-                    if (!NotReadableList.Contains(process.Id))
-                    {
-                        NotReadableList.Add(process.Id);
-                    }
-                    return currentList;
+                    NotReadableProcessIds.Add(process.Id);
+                    return _applicationInfos;
                 }
-                ApplicationInfo? usedAppInfo = currentList.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+
+                ApplicationInfo? usedAppInfo = _applicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                Guid lastUsedApp = appInfo.Guid;
+
                 if (usedAppInfo is null)
                 {
                     Debug.WriteLine("[INFO] New app found !");
-                    _lastUsedApp = appInfo.Guid;
                     App.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        currentList.Add(appInfo);
+                        _applicationInfos.Add(appInfo);
                     });
                 }
                 else
                 {
                     Debug.WriteLine($"[DEBUG] {DateTime.Now} Update of a known app!");
-                    _lastUsedApp = usedAppInfo.Guid;
+                    lastUsedApp = usedAppInfo.Guid;
                     usedAppInfo.Update();
                 }
-                UpdateStatusOfUnusedApp(currentList);
+                UpdateStatusOfUnusedApp(_applicationInfos, lastUsedApp);
 
-                _connection.SaveAsync(ApplicationInfo.ToDtoList(currentList.ToList()));
+                _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
 
-                return currentList;
+                return _applicationInfos;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[ERR] An exception has been thrown, {ex.Message}");
-                return currentList;
+                return _applicationInfos;
             }
         }
 
         private bool IsNullOrIgnorable(Process? process)
         {
-            return process is null || NotReadableList.Contains(process.Id);
+            return process is null || NotReadableProcessIds.Contains(process.Id);
         }
 
-        private void UpdateStatusOfUnusedApp(ICollection<ApplicationInfo> currentList)
+        private void UpdateStatusOfUnusedApp(ICollection<ApplicationInfo> currentList, Guid lastUsedApp)
         {
-            currentList.Where(d => d.Guid != _lastUsedApp).ToList().ForEach(a => a.Stop());
+            currentList.Where(d => d.Guid != lastUsedApp && d.State == State.Running).ToList().ForEach(a => a.Stop());
         }
 
     }

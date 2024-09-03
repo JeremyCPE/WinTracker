@@ -5,6 +5,6 @@ namespace WinTracker.Utils
     public interface ITrackingService
     {
         Task<List<ApplicationInfo>> LoadAsync();
-        ICollection<ApplicationInfo> TrackActiveWindow(ICollection<ApplicationInfo> currentList);
+        ICollection<ApplicationInfo> TrackActiveWindow();
     }
 }

@@ -14,7 +14,7 @@ namespace WinTracker.ViewModels
         private IDatabaseConnection _databaseConnection;
 
         [ObservableProperty]
-        public ICollection<ApplicationInfo> _applicationInfos;
+        public List<ApplicationInfo> _applicationInfos;
 
         public HomeViewModel(IDatabaseConnection database, ITrackingService tracking)
         {
@@ -36,7 +36,7 @@ namespace WinTracker.ViewModels
             {
                 try
                 {
-                    ICollection<ApplicationInfo> list = await Task.Run(() => _trackingService.TrackActiveWindow(ApplicationInfos));
+                    ApplicationInfos = await Task.Run(_trackingService.TrackActiveWindow);
                     await Task.Delay(1000);
                 }
                 catch (Exception ex)
