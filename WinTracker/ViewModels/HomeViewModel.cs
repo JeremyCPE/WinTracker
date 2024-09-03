@@ -9,17 +9,18 @@ namespace WinTracker.ViewModels
 {
     public partial class HomeViewModel : ViewModel
     {
-        private TrackingService _trackingService;
+        private ITrackingService _trackingService;
 
         private IDatabaseConnection _databaseConnection;
 
         [ObservableProperty]
         public ICollection<ApplicationInfo> _applicationInfos;
 
-        public HomeViewModel()
+        public HomeViewModel(IDatabaseConnection database, ITrackingService tracking)
         {
 
-            _databaseConnection = new JsonDatabase();
+            _databaseConnection = database;
+            _trackingService = tracking;
 
             _trackingService = new TrackingService(_databaseConnection);
             _databaseConnection.DeleteOldFile();

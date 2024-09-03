@@ -10,8 +10,10 @@ using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Services;
+using WinTracker.Utils;
 using Wpf.Ui;
 
 namespace WinTracker;
@@ -48,6 +50,8 @@ public partial class App
                 // TaskBar manipulation
                 _ = services.AddSingleton<ITaskBarService, TaskBarService>();
 
+                _ = services.AddSingleton<ITrackingService, TrackingService>();
+                _ = services.AddSingleton<IDatabaseConnection, JsonDatabase>();
                 // Service containing navigation, same as INavigationWindow... but without window
                 _ = services.AddSingleton<INavigationService, NavigationService>();
 

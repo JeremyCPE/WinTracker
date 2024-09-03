@@ -17,13 +17,12 @@ namespace WinTracker.ViewModels
 
         private static int _index = 0;
 
-
-
         private DateTime _toDate;
         private DateTime _fromDate;
+
         private IEnumerable<ISeries> _series;
         private IDatabaseConnection _databaseConnection;
-        private TrackingService _trackingService;
+        private ITrackingService _trackingService;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -59,15 +58,16 @@ namespace WinTracker.ViewModels
                 Text = "Time Used",
             };
 
-        public DashboardViewModel()
+        public DashboardViewModel(IDatabaseConnection database, ITrackingService tracking)
         {
-            _databaseConnection = new JsonDatabase(); // TODO instanciate above
-            _trackingService = new TrackingService(_databaseConnection);
+            _databaseConnection = database;
+            _trackingService = tracking;
 
             ApplyDateCommand = new RelayCommand(ApplyDateOnClick);
 
-            IEnumerable<double> totalSeconds = _trackingService._applicationInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
-            string[] processNames = _trackingService._applicationInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
+            List<ApplicationInfo> appInfos = Task.Run(_trackingService.LoadAsync).Result;
+            IEnumerable<double> totalSeconds = appInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
+            string[] processNames = appInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
 
             LoadSeries(totalSeconds, processNames);
 
