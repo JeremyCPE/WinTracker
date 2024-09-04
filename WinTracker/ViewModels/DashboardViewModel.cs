@@ -65,7 +65,7 @@ namespace WinTracker.ViewModels
 
             ApplyDateCommand = new RelayCommand(ApplyDateOnClick);
 
-            List<ApplicationInfo> appInfos = Task.Run(_trackingService.LoadAsync).Result;
+            List<ApplicationInfo> appInfos = new(); //Task.Run(_trackingService.LoadAsync).Result;
             IEnumerable<double> totalSeconds = appInfos.AsEnumerable().Select(x => (double)x.TimeElapsed.TotalSeconds);
             string[] processNames = appInfos.AsEnumerable().Select(x => x.ProcessInfo.ProcessName).ToArray();
 
