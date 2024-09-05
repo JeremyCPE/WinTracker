@@ -7,12 +7,10 @@ namespace WinTracker.Utils
 {
     public class TrackingService : ITrackingService
     {
-        /// <summary>
-        /// Cache applicationInfo
-        /// </summary>
-        public List<ApplicationInfo> _applicationInfos = new();
 
         private IDatabaseConnection _connection;
+
+        private ApplicationInfos _applicationInfos;
 
         public static HashSet<int> NotReadableProcessIds { get; set; } = [];
 
@@ -21,23 +19,26 @@ namespace WinTracker.Utils
             this._connection = databaseConnection;
         }
 
-        public async Task<List<ApplicationInfo>> LoadAsync()
+        public async Task<ApplicationInfos> LoadAsync()
         {
             if (_applicationInfos is null)
             {
                 List<ApplicationInfo> appInfos = await _connection.LoadAsync();
-                appInfos.ForEach(d => d.UpdateImage(d));
-                _applicationInfos = appInfos;
-                return appInfos;
+                _applicationInfos = new();
+                appInfos.ForEach(delegate (ApplicationInfo app)
+                {
+                    app.UpdateImage(app);
+                    _applicationInfos.List.Add(app);
+                }
+                );
             }
-            return _applicationInfos.ToList();
-
+            return _applicationInfos;
         }
 
         /// <summary>
         /// Track active programs on Windows, ignore those where we don't have any info
         /// </summary>
-        public ICollection<ApplicationInfo> TrackActiveWindow()
+        public ApplicationInfos TrackActiveWindow()
         {
             try
             {
@@ -51,7 +52,7 @@ namespace WinTracker.Utils
                     return _applicationInfos;
                 }
 
-                ApplicationInfo? usedAppInfo = _applicationInfos.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                ApplicationInfo? usedAppInfo = _applicationInfos.List.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
                 Guid lastUsedApp = appInfo.Guid;
 
                 if (usedAppInfo is null)
@@ -59,7 +60,7 @@ namespace WinTracker.Utils
                     Debug.WriteLine("[INFO] New app found !");
                     App.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        _applicationInfos.Add(appInfo);
+                        _applicationInfos.List.Add(appInfo);
                     });
                 }
                 else
@@ -68,9 +69,9 @@ namespace WinTracker.Utils
                     lastUsedApp = usedAppInfo.Guid;
                     usedAppInfo.Update();
                 }
-                UpdateStatusOfUnusedApp(_applicationInfos, lastUsedApp);
+                UpdateStatusOfUnusedApp(_applicationInfos.List.ToList(), lastUsedApp);
 
-                _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.ToList()));
+                _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.List.ToList()));
 
                 return _applicationInfos;
             }
@@ -86,7 +87,7 @@ namespace WinTracker.Utils
             return process is null || NotReadableProcessIds.Contains(process.Id);
         }
 
-        private void UpdateStatusOfUnusedApp(ICollection<ApplicationInfo> currentList, Guid lastUsedApp)
+        private void UpdateStatusOfUnusedApp(List<ApplicationInfo> currentList, Guid lastUsedApp)
         {
             currentList.Where(d => d.Guid != lastUsedApp && d.State == State.Running).ToList().ForEach(a => a.Stop());
         }

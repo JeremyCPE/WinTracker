@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
 using WinTracker.Database;
 using WinTracker.Models;
 using WinTracker.Utils;
@@ -14,7 +13,7 @@ namespace WinTracker.ViewModels
         private IDatabaseConnection _databaseConnection;
 
         [ObservableProperty]
-        public ICollection<ApplicationInfo> _applicationInfos;
+        public ApplicationInfos _applicationInfos;
 
         public HomeViewModel(IDatabaseConnection database, ITrackingService tracking)
         {
@@ -25,26 +24,19 @@ namespace WinTracker.ViewModels
             _trackingService = new TrackingService(_databaseConnection);
             _databaseConnection.DeleteOldFile();
 
-
-            ApplicationInfos = new ObservableCollection<ApplicationInfo>();
-
             StartTracking();
         }
 
         private async void StartTracking()
         {
-            ICollection<ApplicationInfo> appInfos = await _trackingService.LoadAsync();
-            foreach (ApplicationInfo appInfo in appInfos)
-            {
-                ApplicationInfos.Add(appInfo);
-            }
+            ApplicationInfos = await _trackingService.LoadAsync();
 
             while (true)
             {
                 try
                 {
-                    ICollection<ApplicationInfo> apps = await Task.Run(_trackingService.TrackActiveWindow);
-                    ApplicationInfos = apps;
+                    ApplicationInfos list = await Task.Run(_trackingService.TrackActiveWindow);
+                    ApplicationInfos = list;
                     await Task.Delay(1000);
                 }
                 catch (Exception ex)

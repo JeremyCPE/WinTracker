@@ -12,7 +12,7 @@
                 <Image Width="32" Height="32" Source="{Binding Image}"></Image>
             </DataTemplate>
         </Grid.Resources>
-        <DataGrid ItemsSource="{Binding ViewModel.ApplicationInfos}" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding ViewModel.ApplicationInfos.List}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ProcessId" Binding="{Binding ProcessInfo.ProcessId}" Width="*" IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Logo" CellTemplate="{StaticResource ApplicationTemplate}" Width="*" IsReadOnly="True"/>
