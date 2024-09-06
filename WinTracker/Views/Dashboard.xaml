@@ -14,6 +14,6 @@
         </lvc:PieChart>
         <DatePicker Margin="90,11,515,374" SelectedDate="{Binding ViewModel.FromDate, StringFormat=dd/MM/yyyy}" Text="From"></DatePicker>
         <DatePicker Margin="380,11,245,373" SelectedDate="{Binding ViewModel.ToDate, StringFormat=dd/MM/yyyy}" Text="To"/>
-        <Button Margin="570,12,85,373" Command="{Binding ApplyDateCommand}">Apply</Button>
+        <Button Margin="570,12,85,373" Command="{Binding ViewModel.ApplyDateCommand}">Apply</Button>
     </Grid>
 </Page>

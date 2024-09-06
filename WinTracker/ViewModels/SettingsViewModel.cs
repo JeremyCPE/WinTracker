@@ -1,29 +1,70 @@
-﻿using System.Windows.Input;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Wpf.Ui.Demo.Mvvm.ViewModels;
 
-namespace WinTracker.ViewModels
+namespace WinTracker.ViewModels;
+public partial class SettingsViewModel : ViewModel
 {
-    public class SettingsViewModel
+    private bool _isInitialized = false;
+
+    [ObservableProperty]
+    private string _appVersion = string.Empty;
+
+    [ObservableProperty]
+    private Wpf.Ui.Appearance.ApplicationTheme _currentApplicationTheme = Wpf.Ui
+        .Appearance
+        .ApplicationTheme
+        .Unknown;
+
+    public override void OnNavigatedTo()
     {
-        public bool RunAtStartBool { get; set; }
-        public int LogsLength { get; set; }
-        public ICommand RunAtStartCommand { get; set; }
-        public ICommand LogsLengthCommand { get; set; }
-
-        public SettingsViewModel()
+        if (!_isInitialized)
         {
-            // TODO : Use other system
-            //   RunAtStartCommand = new RelayCommand(SetRunAtStart);
-            //   LogsLengthCommand = new RelayCommand(SetLogsLength);
+            InitializeViewModel();
         }
+    }
 
-        public void SetRunAtStart(bool state)
-        {
-            // userSettings
-        }
+    private void InitializeViewModel()
+    {
+        CurrentApplicationTheme = Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme();
+        AppVersion = $"WinTracker - {GetAssemblyVersion()}";
 
-        public void SetLogsLength(int value)
+        _isInitialized = true;
+    }
+
+    private static string GetAssemblyVersion()
+    {
+        return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+            ?? string.Empty;
+    }
+
+    [RelayCommand]
+    private void OnChangeTheme(string parameter)
+    {
+        switch (parameter)
         {
-            // userSettings
+            case "theme_light":
+                if (CurrentApplicationTheme == Wpf.Ui.Appearance.ApplicationTheme.Light)
+                {
+                    break;
+                }
+
+                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Light);
+                CurrentApplicationTheme = Wpf.Ui.Appearance.ApplicationTheme.Light;
+
+                break;
+
+            default:
+                if (CurrentApplicationTheme == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                {
+                    break;
+                }
+
+                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark);
+                CurrentApplicationTheme = Wpf.Ui.Appearance.ApplicationTheme.Dark;
+
+                break;
         }
     }
 }
