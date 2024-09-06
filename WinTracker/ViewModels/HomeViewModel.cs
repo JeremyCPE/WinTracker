@@ -13,15 +13,13 @@ namespace WinTracker.ViewModels
         private IDatabaseConnection _databaseConnection;
 
         [ObservableProperty]
-        public ApplicationInfos _applicationInfos;
+        public ApplicationInfos _applicationInfos = new();
 
         public HomeViewModel(IDatabaseConnection database, ITrackingService tracking)
         {
 
             _databaseConnection = database;
             _trackingService = tracking;
-
-            _trackingService = new TrackingService(_databaseConnection);
             _databaseConnection.DeleteOldFile();
 
             StartTracking();
@@ -30,21 +28,9 @@ namespace WinTracker.ViewModels
         private async void StartTracking()
         {
             ApplicationInfos = await _trackingService.LoadAsync();
-
-            while (true)
-            {
-                try
-                {
-                    ApplicationInfos list = await Task.Run(_trackingService.TrackActiveWindow);
-                    ApplicationInfos = list;
-                    await Task.Delay(1000);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
+            await Task.Run(_trackingService.TrackActiveWindow);
+            return;
         }
-
     }
+
 }

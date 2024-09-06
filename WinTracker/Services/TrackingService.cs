@@ -38,48 +38,52 @@ namespace WinTracker.Utils
         /// <summary>
         /// Track active programs on Windows, ignore those where we don't have any info
         /// </summary>
-        public ApplicationInfos TrackActiveWindow()
+        public async void TrackActiveWindow()
         {
-            try
+            while (true)
             {
-                Process? process = ProcessUtils.GetForegroundProcess();
-                if (IsNullOrIgnorable(process)) return _applicationInfos;
-
-                ApplicationInfo? appInfo = ApplicationInfo.FromProcess(process);
-                if (appInfo is null)
+                try
                 {
-                    NotReadableProcessIds.Add(process.Id);
-                    return _applicationInfos;
-                }
+                    Process? process = ProcessUtils.GetForegroundProcess();
+                    if (IsNullOrIgnorable(process)) continue;
 
-                ApplicationInfo? usedAppInfo = _applicationInfos.List.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
-                Guid lastUsedApp = appInfo.Guid;
-
-                if (usedAppInfo is null)
-                {
-                    Debug.WriteLine("[INFO] New app found !");
-                    App.Current.Dispatcher.Invoke((Action)delegate
+                    ApplicationInfo? appInfo = ApplicationInfo.FromProcess(process);
+                    if (appInfo is null)
                     {
-                        _applicationInfos.List.Add(appInfo);
-                    });
+                        NotReadableProcessIds.Add(process.Id);
+                        continue;
+                    }
+
+                    ApplicationInfo? usedAppInfo = _applicationInfos.List.FirstOrDefault(d => d.ProcessInfo.ProcessName == appInfo.ProcessInfo.ProcessName);
+                    Guid lastUsedApp = appInfo.Guid;
+
+                    if (usedAppInfo is null)
+                    {
+                        Debug.WriteLine("[INFO] New app found !");
+                        App.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            _applicationInfos.List.Add(appInfo);
+                        });
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[DEBUG] {DateTime.Now} Update of a known app!");
+                        lastUsedApp = usedAppInfo.Guid;
+                        usedAppInfo.Update();
+                    }
+                    UpdateStatusOfUnusedApp(_applicationInfos.List.ToList(), lastUsedApp);
+
+                    _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.List.ToList()));
+                    await Task.Delay(1000);
+                    continue;
                 }
-                else
+                catch (Exception ex)
                 {
-                    Debug.WriteLine($"[DEBUG] {DateTime.Now} Update of a known app!");
-                    lastUsedApp = usedAppInfo.Guid;
-                    usedAppInfo.Update();
+                    Debug.WriteLine($"[ERR] An exception has been thrown, {ex.Message}");
+                    continue;
                 }
-                UpdateStatusOfUnusedApp(_applicationInfos.List.ToList(), lastUsedApp);
-
-                _connection.SaveAsync(ApplicationInfo.ToDtoList(_applicationInfos.List.ToList()));
-
-                return _applicationInfos;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[ERR] An exception has been thrown, {ex.Message}");
-                return _applicationInfos;
-            }
+
         }
 
         private bool IsNullOrIgnorable(Process? process)

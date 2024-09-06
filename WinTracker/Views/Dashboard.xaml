@@ -9,11 +9,11 @@
       d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="65,0,0,0">
         <lvc:PieChart
-            Title="{Binding Title}"
-            Series="{Binding Series}" >
+            Title="{Binding ViewModel.Title}"
+            Series="{Binding ViewModel.Series}" >
         </lvc:PieChart>
-        <DatePicker Margin="90,11,515,374" SelectedDate="{Binding FromDate, StringFormat=dd/MM/yyyy}" Text="From"></DatePicker>
-        <DatePicker Margin="380,11,245,373" SelectedDate="{Binding ToDate, StringFormat=dd/MM/yyyy}" Text="To"/>
+        <DatePicker Margin="90,11,515,374" SelectedDate="{Binding ViewModel.FromDate, StringFormat=dd/MM/yyyy}" Text="From"></DatePicker>
+        <DatePicker Margin="380,11,245,373" SelectedDate="{Binding ViewModel.ToDate, StringFormat=dd/MM/yyyy}" Text="To"/>
         <Button Margin="570,12,85,373" Command="{Binding ApplyDateCommand}">Apply</Button>
     </Grid>
 </Page>
