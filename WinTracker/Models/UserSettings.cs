@@ -2,10 +2,19 @@
 {
     public class UserSettings
     {
-        public bool RunAtStart { get; private set; }
-        public List<string> BlackList { get; private set; }
-
         // fill
 
+        public bool RunAtStart { get; private set; }
+
+        public Theme Theme { get; set; } = Theme.Light;
+
+        public List<string> BlackList { get; private set; }
+
+    }
+
+    public enum Theme
+    {
+        Light,
+        Dark,
     }
 }

@@ -9,6 +9,8 @@ namespace WinTracker.Database
     public class JsonDatabase : IDatabaseConnection
     {
         private readonly static string DatabaseFileFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + """\WinTracker\logs\""";
+        private readonly static string SettingsFileFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + """\WinTracker\settings\""";
+        private readonly static string SettingsFileName = "settings.json";
         private readonly static string DatabaseFileName = "database.json";
         private readonly static string DatabaseFilePath = DatabaseFileFolder + DateTime.Today.ToString("yyyyMMdd") + DatabaseFileName;
 
@@ -21,6 +23,21 @@ namespace WinTracker.Database
 
                 string json = JsonSerializer.Serialize(applicationInfoDto);
                 await File.WriteAllTextAsync(DatabaseFilePath, json);
+            }
+            catch (NotSupportedException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async void SaveAsync(UserSettings userSettings)
+        {
+            try
+            {
+                if (!Directory.Exists(SettingsFileFolder)) Directory.CreateDirectory(SettingsFileFolder);
+
+                string json = JsonSerializer.Serialize(userSettings);
+                await File.WriteAllTextAsync(SettingsFileFolder + SettingsFileName, json);
             }
             catch (NotSupportedException ex)
             {
@@ -47,6 +64,26 @@ namespace WinTracker.Database
             catch
             {
                 return [];
+            }
+        }
+
+        public async Task<UserSettings?> LoadAsyncUserSettings(string? path = null)
+        {
+            if (string.IsNullOrEmpty(path)) path = SettingsFileFolder + SettingsFileName;
+            try
+            {
+                if (!File.Exists(path))
+                {
+                    return null;
+                }
+
+                string json = await File.ReadAllTextAsync(path);
+                UserSettings? userSettingsDto = JsonSerializer.Deserialize<UserSettings>(json);
+                return null;
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -103,7 +140,6 @@ namespace WinTracker.Database
                 // Get the current date
                 DateTime currentDate = DateTime.Now;
 
-                // Get all files in the log folder
                 string[] files = Directory.GetFiles(DatabaseFileFolder);
 
                 foreach (string file in files)
@@ -112,10 +148,8 @@ namespace WinTracker.Database
                     {
                         continue;
                     }
-                    // Get the creation time of the file
                     DateTime creationTime = File.GetCreationTime(file);
 
-                    // Calculate the age of the file
                     TimeSpan fileAge = currentDate - creationTime;
 
                     // Check if the file is older than 30 days
