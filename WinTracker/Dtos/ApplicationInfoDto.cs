@@ -4,17 +4,17 @@ namespace WinTracker.Dtos
 {
     public class ApplicationInfoDto
     {
-        public Guid Guid { get; private set; }
-        public DateOnly DateOnly { get; private set; }
+        public Guid Guid { get; }
+        public DateOnly DateOnly { get; }
 
-        public ProcessInfo ProcessInfo { get; private set; }
+        public ProcessInfo ProcessInfo { get; }
 
 
-        public string FileName { get; private set; }
+        public string FileName { get; }
 
-        public CategoryDto CategoryDto { get; private set; }
+        public CategoryDto CategoryDto { get; }
 
-        public TimeSpan TimeElapsed { get; private set; }
+        public TimeSpan TimeElapsed { get; }
 
         public ApplicationInfoDto(Guid guid, DateOnly dateOnly, ProcessInfo processInfo, string fileName, CategoryDto categoryDto, TimeSpan timeElapsed)
         {

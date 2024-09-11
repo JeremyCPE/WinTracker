@@ -4,10 +4,16 @@ namespace WinTracker.Dtos
 {
     public class CategoryDto
     {
-        public string Name { get; private set; } = "Others";
+        public string Name { get; }
+
+        public CategoryDto(string name)
+        {
+            Name = name;
+        }
+
         public static CategoryDto From(Category category)
         {
-            return new() { Name = category.Name ?? "Others" };
+            return new(category.Name);
         }
 
         public Category To()
